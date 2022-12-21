@@ -10,7 +10,7 @@ float Magnitude (Complex a) // function that calculates magnitude of a complex n
 {
     float mag = sqrt(pow(a.real, 2) + pow(a.img, 2));
     return mag;
-}
+} // My edit
 Complex add_Complex (Complex a,Complex b)//A - Function that adds two complex numbers
 {
     Complex c;
@@ -135,6 +135,6 @@ int main()
         }
         break;
     }
-    printf("---------------------------------------\n");
+    printf("---------------------------------------\n"); 
     return 0;
 }
