@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-typedef struct // struct complex number holds two float values - real and imaginary parts
+typedef struct
 {
     float real;
     float img;
