@@ -1,2 +1,10 @@
 9780136019701,An Introduction to Organic Chemistry,Timberlake Karen,10,3.54,12-2008
 9781506304212,Mathematics for Social Scientists,Kropko Jonathan,7,4.73,12-2015
+9781506404318,Jane Eyre,Charlotte Bronte,12,5.65,8-2020
+9781506304445,Wuthering Heights,Emily Bronte,15,3.90,11-2019
+9781506504237,Moby Dick,Herman Melville,10,1.22,1-2015
+9781506356119,The Great Gatsby,F. Scott Fitzgerald,9,4.15,4-2018
+9781606304212,Frankenstein,Mary Shelley,8,6.72,10-2012
+9781506354331,Robison Crusoe,Daniel Defoe,17,8.44,6-2013
+9781506306789,Little Women,Louisa May Alcott,11,2.35,1-2021
+9781506323764,Crime and Punishment,Fyodor Dostoyevsky,16,5.28,3-2022
