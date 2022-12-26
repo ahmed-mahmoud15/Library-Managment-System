@@ -29,6 +29,7 @@ typedef struct Account // struct that holds account information (username and pa
 
 Book info[MAX]; // global array of struct Book with up to MAX number of elements
 Account Credentials[MAX]; // global array of struct Account with up to MAX number of elements
+int infoSize; // global variable for utilized size of info
 
 int numOfLines(FILE *fileCredentials) // function that counts the number of lines in a file
 {
@@ -134,6 +135,91 @@ void Query (string isbn, int n)
     }
 }
 
+void printAll()
+{
+    int i;
+    printf("Sort by:\nTitle\nPrice\nDate of Publication\n");
+    printf("-----------------------------------------\n");
+    for (i = 0; i < infoSize; i++)
+    {
+        printBook(i);
+        printf("-----------------------------------------\n");
+    }
+
+}
+void sortByTitle() // function that sorts global info array by title from A to Z
+{
+    int i, pass, swap = 0;
+    Book temp;
+    for (pass = 0; pass < infoSize - 1; pass++)
+    {
+        for (i = 0; i < infoSize - pass - 1; i++)
+        {
+            if (strcmp((info[i].title), info[i + 1].title) == 1)
+            {
+                temp = info[i];
+                info[i] = info[i + 1];
+                info[i + 1] = temp;
+                swap = 1;
+            }
+        }
+        if (!swap)
+            break;
+    }
+}
+
+void sortByDate () // function that sorts global info array by date from newer to older publications
+{
+    int i, pass, swap = 0;
+    Book temp;
+    for (pass = 0; pass < infoSize - 1; pass++)
+    {
+        for (i = 0; i < infoSize - pass - 1; i++)
+        {
+            if (info[i].publication.year < info[i + 1].publication.year)
+            {
+                temp = info[i];
+                info[i] = info[i + 1];
+                info[i + 1] = temp;
+                swap = 1;
+            }
+            else if (info[i].publication.year == info[i + 1].publication.year)
+            {
+                if (info[i].publication.month < info[i + 1].publication.month)
+                {
+                    temp = info[i];
+                    info[i] = info[i + 1];
+                    info[i + 1] = temp;
+                    swap = 1;
+                }
+            }
+            if (!swap)
+                break;
+        }
+    }
+}
+
+void sortByPrice () // function that sorts global info array by price from cheaper to more expensive
+{
+    int i, pass, swap = 0;
+    Book temp;
+    for (pass = 0; pass < infoSize - 1; pass++)
+    {
+        for (i = 0; i < infoSize - pass - 1; i++)
+        {
+            if (info[i].price > info[i + 1].price)
+            {
+                temp = info[i];
+                info[i] = info[i + 1];
+                info[i + 1] = temp;
+                swap = 1;
+            }
+        }
+        if (!swap)
+            break;
+    }
+}
+
 int main()
 {
     int i, nLines;
@@ -161,11 +247,12 @@ int main()
     else
         return 1;
 
-    nLines = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
-    load(fileBooks, nLines); // calls function to store books.txt data into the global array "info"
+    infoSize = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
+    load(fileBooks, infoSize); // calls function to store books.txt data into the global array "info"
     printf("Enter a book ISBN: ");
     scanf("%s",isbn);
     Query(isbn,nLines);
+    printAll();
 
     return 0;
 }
