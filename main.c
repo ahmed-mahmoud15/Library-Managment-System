@@ -156,7 +156,7 @@ void advancedSearch (string word)
 void printAll()
 {
     int i, flag = 0, length;
-    char sortMethod[10];
+    string sortMethod;
     string title = "title", price = "price", date = "date";
     printf("-----------------------------------------\n");
     printf("Sort by:\nTitle\nPrice\nDate of Publication\n\n");
@@ -164,7 +164,7 @@ void printAll()
     do
     {
         printf("|To choose a sorting method, enter \"TITLE\", \"PRICE\", or \"DATE\"|\n");
-        gets(sortMethod);
+        scanf("%s", sortMethod);
         length = strlen(sortMethod);
         for (i = 0; i < length; i++)
         {
