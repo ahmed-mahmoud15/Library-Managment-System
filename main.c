@@ -48,31 +48,10 @@ void readCredentials(FILE *fileCredentials, int n)
     int i,j;
     for(i =0 ; !feof(fileCredentials) ; i++)
     {
-        fgets(Credentials[i].username, MAX, fileCredentials);
-        fgets(Credentials[i].password, MAX, fileCredentials);
-    }
-    string tempuser, temppass, newtemp, NEWERtemp;
-    for (i = 0; i < n; i++)
-    {
-        j=0;
-        strcpy(tempuser, Credentials[i].username);
-        while (tempuser[j] != '\n')
-        {
-            newtemp[j] = tempuser[j];
-            j++;
-        }
-        newtemp[j]= '\0';
-        strcpy(Credentials[i].username, newtemp);
-        j = 0;
-        strcpy(temppass, Credentials[i].password);
-        while (temppass[j] != '\n')
-        {
-            NEWERtemp[j] = temppass[j];
-            j++;
-        }
-        NEWERtemp[j]= '\0';
-        strcpy(Credentials[i].password, NEWERtemp);
-
+        fgets(Credentials[i].username, sizeof(Credentials[i].username), fileCredentials);
+        Credentials[i].username[strlen(Credentials[i].username)-1] = '\0';
+        fgets(Credentials[i].password, sizeof(Credentials[i].password), fileCredentials);
+        Credentials[i].password[strlen(Credentials[i].password)-1] = '\0';
     }
 
 }
