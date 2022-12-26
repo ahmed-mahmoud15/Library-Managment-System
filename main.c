@@ -124,7 +124,7 @@ int main()
         return 1;
 
     nLines = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
-    load(fileBooks, nLines, books); // calls function to store books.txt data into the global array "info"
+    load(fileBooks, nLines); // calls function to store books.txt data into the global array "info"
 
     return 0;
 }
