@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #define MAX 100
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
@@ -131,14 +132,63 @@ void Query (string isbn)
     }
     if (flag==0)
     {
-        printf("The ISBN entered is not available");
+        printf("The ISBN entered is not available\n");
+    }
+}
+
+void advancedSearch (string word)
+{
+    int i,flag=0;
+    for(i=0; i<infoSize; i++)
+    {
+        if (strstr(info[i].title, word))
+        {
+            printBook(i);
+            flag=1;
+        }
+    }
+    if (flag==0)
+    {
+        printf("No matches are found");
     }
 }
 
 void printAll()
 {
-    int i;
-    printf("Sort by:\nTitle\nPrice\nDate of Publication\n");
+    int i, flag = 0, length;
+    char sortMethod[10];
+    string title = "title", price = "price", date = "date";
+    printf("-----------------------------------------\n");
+    printf("Sort by:\nTitle\nPrice\nDate of Publication\n\n");
+    printf("-----------------------------------------\n");
+    do
+    {
+        printf("|To choose a sorting method, enter \"TITLE\", \"PRICE\", or \"DATE\"|\n");
+        gets(sortMethod);
+        length = strlen(sortMethod);
+        for (i = 0; i < length; i++)
+        {
+            sortMethod[i] = tolower(sortMethod[i]);
+        }
+        if (!strcmp(title, sortMethod))
+        {
+            sortByTitle();
+            flag = 1;
+        }
+        else if (!strcmp(price, sortMethod))
+        {
+            sortByPrice();
+            flag = 2;
+        }
+        else if (!strcmp(date, sortMethod))
+        {
+            sortByDate();
+            flag = 3;
+        }
+        else
+            printf("Enter a valid method!\n");
+    }
+    while (!flag);
     printf("-----------------------------------------\n");
     for (i = 0; i < infoSize; i++)
     {
@@ -147,6 +197,7 @@ void printAll()
     }
 
 }
+
 void sortByTitle() // function that sorts global info array by title from A to Z
 {
     int i, pass, swap = 0;
@@ -219,22 +270,6 @@ void sortByPrice () // function that sorts global info array by price from cheap
             break;
     }
 }
-void advancedSearch (string word)
-{
-    int i,flag=0;
-    for(i=0; i<infoSize; i++)
-    {
-        if (strstr(info[i].title, word))
-        {
-            printBook(i);
-            flag=1;
-        }
-    }
-    if (flag==0)
-    {
-        printf("No matches are found");
-    }
-}
 
 int main()
 {
@@ -268,7 +303,7 @@ int main()
     printf("Enter a book ISBN: ");
     scanf("%s",isbn);
     Query(isbn);
-    // printAll();
+    printAll();
     printf("Enter a subtitle: ");
     scanf("%s",word);
     advancedSearch(word);
