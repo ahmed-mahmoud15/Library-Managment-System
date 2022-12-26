@@ -78,12 +78,12 @@ int login(int trials, int n) // login function that prompts user to enter a user
 
 }
 
-void load(FILE * fileBooks, int n) // load function that stores book.txt file data into the global array "info"
+void load(FILE * fileBooks) // load function that stores book.txt file data into the global array "info"
 {
     rewind(fileBooks); // function repositions the file pointer to the beginning of the file
     string temp;
     int i;
-    for (i=0; i< n; i++)
+    for (i=0; i< infoSize; i++)
     {
         fgets(temp, MAX, fileBooks);
 
@@ -104,12 +104,12 @@ void printDate(Date date)
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-    printf("Published: %s %d\n", months[date.month - 1], date.year);
+    printf("Published: %s %d\n\n", months[date.month - 1], date.year);
 }
 
 void printBook (int i)
 {
-    printf("ISBN: %s\n", info[i].ISBN);
+    printf("\nISBN: %s\n", info[i].ISBN);
     printf("Title: %s\n", info[i].title);
     printf("Author: %s\n", info[i].author);
     printf("Quantity: %d\n", info[i].quantity);
@@ -117,10 +117,10 @@ void printBook (int i)
     printDate(info[i].publication);
 }
 
-void Query (string isbn, int n)
+void Query (string isbn)
 {
     int i,flag=0;
-    for(i=0; i<n; i++)
+    for(i=0; i<infoSize; i++)
     {
         if (strcmp(isbn, info[i].ISBN) == 0)
         {
@@ -219,11 +219,27 @@ void sortByPrice () // function that sorts global info array by price from cheap
             break;
     }
 }
+void advancedSearch (string word)
+{
+    int i,flag=0;
+    for(i=0; i<infoSize; i++)
+    {
+        if (strstr(info[i].title, word))
+        {
+            printBook(i);
+            flag=1;
+        }
+    }
+    if (flag==0)
+    {
+        printf("No matches are found");
+    }
+}
 
 int main()
 {
     int i, nLines;
-    string isbn;
+    string isbn, word;
 
     FILE * fileCredentials = fopen("files//credentials.txt", "r"); // initializes file pointer that opens credentials.txt file to be read only
     FILE * fileBooks = fopen("files//books.txt", "r+"); // initializes file pointer that opens books.txt file
@@ -248,11 +264,14 @@ int main()
         return 1;
 
     infoSize = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
-    load(fileBooks, infoSize); // calls function to store books.txt data into the global array "info"
+    load(fileBooks); // calls function to store books.txt data into the global array "info"
     printf("Enter a book ISBN: ");
     scanf("%s",isbn);
-    Query(isbn,nLines);
-    printAll();
+    Query(isbn);
+    // printAll();
+    printf("Enter a subtitle: ");
+    scanf("%s",word);
+    advancedSearch(word);
 
     return 0;
 }
