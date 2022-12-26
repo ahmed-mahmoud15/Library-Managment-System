@@ -14,7 +14,7 @@ typedef struct Date // struct that stores the date as an integer month and integ
 typedef struct Book
 {
     char ISBN[14]; // character array ISBN to store the 13 digit ISBN number as a string with the 14th element being "\0"
-    string name;
+    string title;
     string author;
     int quantity;
     float price;
@@ -87,7 +87,7 @@ void load(FILE * fileBooks, int n) // load function that stores book.txt file da
         fgets(temp, MAX, fileBooks);
 
         strcpy(info[i].ISBN, strtok(temp, ","));
-        strcpy(info[i].name, strtok(NULL, ","));
+        strcpy(info[i].title, strtok(NULL, ","));
         strcpy(info[i].author, strtok(NULL, ","));
 
         info[i].quantity = atoi(strtok(NULL, ","));
@@ -96,10 +96,48 @@ void load(FILE * fileBooks, int n) // load function that stores book.txt file da
         info[i].publication.year = atoi(strtok(NULL, "-"));
     }
 }
+void printDate(Date date)
+{
+    string months[12] =
+    {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+    printf("Published: %s %d\n", months[date.month - 1], date.year);
+}
+
+void printBook (int i)
+{
+    printf("ISBN: %s\n", info[i].ISBN);
+    printf("Title: %s\n", info[i].title);
+    printf("Author: %s\n", info[i].author);
+    printf("Quantity: %d\n", info[i].quantity);
+    printf("Price: %.2f$\n", info[i].price);
+    printDate(info[i].publication);
+}
+
+void Query (string isbn, int n)
+{
+    int i,flag=0;
+    for(i=0; i<n; i++)
+    {
+        if (strcmp(isbn, info[i].ISBN) == 0)
+        {
+            printBook(i);
+            flag=1;
+            break;
+        }
+    }
+    if (flag==0)
+    {
+        printf("The ISBN entered is not available");
+    }
+}
 
 int main()
 {
     int i, nLines;
+    string isbn;
 
     FILE * fileCredentials = fopen("files//credentials.txt", "r"); // initializes file pointer that opens credentials.txt file to be read only
     FILE * fileBooks = fopen("files//books.txt", "r+"); // initializes file pointer that opens books.txt file
@@ -125,6 +163,9 @@ int main()
 
     nLines = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
     load(fileBooks, nLines); // calls function to store books.txt data into the global array "info"
+    printf("Enter a book ISBN: ");
+    scanf("%s",isbn);
+    Query(isbn,nLines);
 
     return 0;
 }
