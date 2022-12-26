@@ -76,12 +76,38 @@ int login(int trials, int n)
 
 }
 
+void load(FILE * fileBooks, int n, Book books[n])
+{
+    rewind(fileBooks);
+    string temp;
+    int i;
+    for (i=0; i< n; i++)
+    {
+        fgets(temp, MAX, fileBooks);
+
+        strcpy(books[i].ISBN, strtok(temp, ","));
+        strcpy(books[i].name, strtok(NULL, ","));
+        strcpy(books[i].author, strtok(NULL, ","));
+
+        books[i].quantity = atoi(strtok(NULL, ","));
+        books[i].price = atof(strtok(NULL, ","));
+        books[i].publication.month = atoi(strtok(NULL, "-"));
+        books[i].publication.year = atoi(strtok(NULL, "-"));
+    }
+}
+
 int main()
 {
     int i, nLines;
 
     FILE * fileCredentials = fopen("files//credentials.txt", "r");
+    FILE * fileBooks = fopen("files//books.txt", "r");
     if (fileCredentials == NULL)
+    {
+        printf("Error while opening the file");
+        return 1;
+    }
+    if (fileBooks == NULL)
     {
         printf("Error while opening the file");
         return 1;
@@ -95,7 +121,10 @@ int main()
     else
         return 1;
 
+    nLines = numOfLines(fileBooks);
 
+    Book books[nLines];
+    load(fileBooks, nLines, books);
 
     return 0;
 }
