@@ -4,6 +4,7 @@
 #include <ctype.h>
 #define MAX 100
 #define numofTrials 5
+#define std
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
 
@@ -33,6 +34,8 @@ Book info[MAX]; // global array of struct Book with up to MAX number of elements
 Account Credentials[MAX]; // global array of struct Account with up to MAX number of elements
 int infoSize; // global variable for utilized size of info
 
+int fflush(FILE *stream);
+
 int numOfLines(FILE *fileCredentials) // function that counts the number of lines in a file
 {
     rewind(fileCredentials); // function repositions the file pointer to the beginning of the file
@@ -53,6 +56,7 @@ void readCredentials(FILE *fileCredentials, int n) // function that stores user 
     {
         fgets(Credentials[i].username, sizeof(Credentials[i].username), fileCredentials); //copies line from file into the username string of struct Account Credentials[i]
         Credentials[i].username[strlen(Credentials[i].username)-1] = '\0'; // removes \n that fgets puts at the end of the string
+
         fgets(Credentials[i].password, sizeof(Credentials[i].password), fileCredentials); //copies line from file into the password string of struct Account Credentials[i]
         Credentials[i].password[strlen(Credentials[i].password)-1] = '\0'; // removes \n that fgets puts at the end of the string
     }
@@ -68,13 +72,19 @@ int login(int trials, int n) // login function that prompts user to enter a user
         return 0;
     }
     string user, pass;
+
     printf("Enter Username: ");
+    fflush(stdin);
     gets(user);
+
     printf("Enter Password: ");
+    fflush(stdin);
     gets(pass);
+
     for(i =0; i < n; i++) // for loop that passes through the Credentials array
         if (!strcmp(Credentials[i].username, user) && !strcmp(Credentials[i].password, pass)) // BASE CASE - condition to check if the user inputted username and password match with any username and password from credentials array
             return 1; // leaves function by returning 1 and skips the remaining lines of the function without executing
+
     printf("Invalid username or password\nYou have %d more trials\n\n\n", trials-1); //prints error message informing the user of how many tries they have left before the program closes
     return login(--trials, n); // RECURSIVE CASE - in case of incorrect credentials, reduces number of tries remaining by 1 before function calls itself again
 
@@ -304,7 +314,7 @@ void sortByPrice () // function that sorts global info array by price from cheap
 
 void printAll()
 {
-    int i, flag = 0, length;
+    int i, flag = 0;
     string sortMethod;
     string title = "title", price = "price", date = "date";
     printf("-----------------------------------------\n");
@@ -342,7 +352,7 @@ void printAll()
 
 }
 
-void modify() // unfinished function
+void modify()
 {
     string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor;
     int i, found = 1, index = 0, inputmonth, inputyear, inputQuantity;
@@ -350,8 +360,9 @@ void modify() // unfinished function
     printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
+        fflush(stdin);
         gets(isbn);
-        if (!isValidISBN(isbn))
+        if (isValidISBN(isbn))
             for (i = 0; i < infoSize; i++)
             {
                 found = strcmp(isbn, info[i].ISBN);
@@ -452,6 +463,78 @@ void modify() // unfinished function
     else if (!strcasecmp(answer, no))
     {
         printf("Publication Date will remain as %d-%d.\n", info[index].publication.month, info[index].publication.year);
+    }
+}
+
+void menu(FILE * fileCredentials, FILE * fileBooks)
+{
+    char option = '\0';
+    readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
+    printf("Welcome To our Library System\n\n");
+letter :
+    fflush(stdin);
+    printf("Please Enter letter 'l' to login or 'q' to quit : ");
+    scanf("%c", &option);
+    option = tolower(option);
+    if(option == 'l')
+        login(numofTrials, numOfLines(fileCredentials) / 2);
+    else if(option == 'q')
+        return;
+    else
+        goto letter;
+    // if the program reach this point that mean the user logged in successfully
+    load(fileBooks); // calls function to store books.txt data into the global array "info"
+    printf("You can choose one of our options by :\n");
+    printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo SAVE enter 'z'\nTo QUIT enter 'q'\n");
+selectOption :
+    fflush(stdin);
+    printf("\n\nEnter the letter : ");
+    scanf("%c", &option);
+    option = tolower(option);
+    if (option == 'a')
+        printf("function is not available now\n");
+    else if (option == 'd')
+        printf("function is not available now\n");
+    else if (option == 'm')
+        modify();
+    else if (option == 's')
+    {
+        string isbn;
+        printf("Enter a book ISBN: ");
+        scanf("%s",isbn);
+        Query(isbn);
+    }
+    else if (option == 'v')
+    {
+        string word;
+        printf("Enter a subtitle: ");
+        scanf("%s",word);
+        advancedSearch(word);
+    }
+    else if (option == 'p')
+    {
+        printAll();
+    }
+    else if (option == 'z')
+        printf("function is not available now\n");
+    else if (option == 'q')
+        printf("function is not available now\n");
+    else
+    {
+        printf("Wrong value\n");
+    }
+    while(1)
+    {
+        printf("Do you want to select more options (y,n) ? ");
+        fflush(stdin);
+        scanf("%c", &option);
+        option = tolower(option);
+        if (option == 'y')
+            goto selectOption;
+        else if(option == 'n')
+            break;
+        else
+            continue;
     }
 }
 
