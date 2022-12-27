@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#define MAX 100
+#define MAX 256
 #define numofTrials 5
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
@@ -32,6 +32,7 @@ typedef struct Account // struct that holds account information (username and pa
 Book info[MAX]; // global array of struct Book with up to MAX number of elements
 Account Credentials[MAX]; // global array of struct Account with up to MAX number of elements
 int infoSize; // global variable for utilized size of info
+
 
 int numOfLines(FILE *fileCredentials) // function that counts the number of lines in a file
 {
@@ -70,16 +71,16 @@ int login(int trials, int n) // login function that prompts user to enter a user
     }
     string user, pass;
 
-    printf("Enter Username: ");
     fflush(stdin);
+    printf("\nEnter Username: ");
     gets(user);
 
-    printf("Enter Password: ");
     fflush(stdin);
+    printf("Enter Password: ");
     gets(pass);
 
     for(i =0; i < n; i++) // for loop that passes through the Credentials array
-        if (!strcmp(Credentials[i].username, user) && !strcmp(Credentials[i].password, pass)) // BASE CASE - condition to check if the user inputted username and password match with any username and password from credentials array
+        if (strcmp(Credentials[i].username, user) == 0 && strcmp(Credentials[i].password, pass) == 0) // BASE CASE - condition to check if the user inputted username and password match with any username and password from credentials array
             return 1; // leaves function by returning 1 and skips the remaining lines of the function without executing
 
     printf("Invalid username or password\nYou have %d more trials\n\n\n", trials-1); //prints error message informing the user of how many tries they have left before the program closes
@@ -92,7 +93,7 @@ void load(FILE * fileBooks) // load function that stores book.txt file data into
     rewind(fileBooks); // function repositions the file pointer to the beginning of the file
     string temp;
     int i;
-    for (i=0; i< infoSize; i++)
+    for (i=0; i < infoSize; i++)
     {
         fgets(temp, MAX, fileBooks);
 
@@ -476,12 +477,55 @@ void modify()
     }
 }
 
+void save()
+{
+    int i;
+    FILE * fileBooks = fopen("files//books.txt", "w"); // initializes file pointer that opens books.txt file
+
+    if (fileBooks == NULL)
+    {
+        printf("Error while opening the books.txt file"); // Error message if books.txt file is not found
+        return 1; // Ends program by returning 1 to show error
+    }
+
+    for(i = 0; i < infoSize ; i++)
+    {
+        fprintf(fileBooks, "%s",info[i].ISBN);
+        fprintf(fileBooks, ",%s",info[i].title);
+        fprintf(fileBooks, ",%s",info[i].author);
+        fprintf(fileBooks, ",%d",info[i].quantity);
+        fprintf(fileBooks, ",%.2f",info[i].price);
+
+        if(i == infoSize - 1)
+            fprintf(fileBooks, ",%d-%d",info[i].publication.month, info[i].publication.year);
+        else
+            fprintf(fileBooks, ",%d-%d\n",info[i].publication.month, info[i].publication.year);
+    }
+    fclose(fileBooks);
+}
+
+int quit()
+{
+    char option;
+    printf("\n\nYour changes will be discarded (y/n) ");
+    fflush(stdin);
+    scanf("%c", &option);
+    option = tolower(option);
+
+    if(option == 'y')
+        return 0;
+    else
+        return 1;
+}
+
 void menu(FILE * fileCredentials, FILE * fileBooks)
 {
-    char option = '\0';
+    char option;
     readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
     printf("Welcome To our Library System\n\n");
+
 letter :
+
     fflush(stdin);
     printf("Please Enter letter 'l' to login or 'q' to quit : ");
     scanf("%c", &option);
@@ -494,9 +538,13 @@ letter :
         goto letter;
     // if the program reach this point that mean the user logged in successfully
     load(fileBooks); // calls function to store books.txt data into the global array "info"
-    printf("You can choose one of our options by :\n");
-    printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo SAVE enter 'z'\nTo QUIT enter 'q'\n");
+
 selectOption :
+
+    printf("\n\nYou can choose one of our options by :\n");
+    printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo QUIT enter 'q'\n");
+
+
     fflush(stdin);
     printf("\n\nEnter the letter : ");
     scanf("%c", &option);
@@ -519,27 +567,50 @@ selectOption :
     {
         printAll();
     }
-    else if (option == 'z')
-        printf("function is not available now\n");
     else if (option == 'q')
-        printf("function is not available now\n");
+    {
+        if(!quit())
+            return;
+    }
     else
     {
         printf("Wrong value\n");
     }
     while(1)
     {
-        printf("Do you want to select more options (y,n) ? ");
+        printf("\n\nDo you want to select more options (y,n) ? ");
         fflush(stdin);
         scanf("%c", &option);
         option = tolower(option);
         if (option == 'y')
             goto selectOption;
         else if(option == 'n')
-            break;
+        {
+            while(1)
+            {
+                printf("\n\nDo you want to save your EDITS (y,n) ? ");
+                fflush(stdin);
+                scanf("%c", &option);
+                option = tolower(option);
+
+                if (option == 'y')
+                {
+                    save();
+                    return;
+                }
+
+                else if (option == 'n')
+                {
+                    quit();
+                    return;
+                }
+            }
+
+        }
         else
             continue;
     }
+
 }
 
 int main()
@@ -553,13 +624,14 @@ int main()
         return 1; // Ends program by returning 1 to show error
     }
 
-    FILE * fileBooks = fopen("files//books.txt", "r+"); // initializes file pointer that opens books.txt file
+    FILE * fileBooks = fopen("files//books.txt", "r"); // initializes file pointer that opens books.txt file
 
     if (fileBooks == NULL)
     {
         printf("Error while opening the books.txt file"); // Error message if books.txt file is not found
         return 1; // Ends program by returning 1 to show error
     }
+
 
     infoSize = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
 
@@ -571,4 +643,3 @@ int main()
 
     return 0;
 }
-
