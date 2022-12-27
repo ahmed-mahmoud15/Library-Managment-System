@@ -314,22 +314,17 @@ void printAll()
     {
         printf("|To choose a sorting method, enter \"TITLE\", \"PRICE\", or \"DATE\"|\n");
         scanf("%s", sortMethod);
-        length = strlen(sortMethod);
-        for (i = 0; i < length; i++)
-        {
-            sortMethod[i] = tolower(sortMethod[i]);
-        }
-        if (!strcmp(title, sortMethod))
+        if (!strcasecmp(title, sortMethod))
         {
             sortByTitle();
             flag = 1;
         }
-        else if (!strcmp(price, sortMethod))
+        else if (!strcasecmp(price, sortMethod))
         {
             sortByPrice();
             flag = 2;
         }
-        else if (!strcmp(date, sortMethod))
+        else if (!strcasecmp(date, sortMethod))
         {
             sortByDate();
             flag = 3;
