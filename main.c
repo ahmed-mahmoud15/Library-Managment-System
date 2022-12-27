@@ -477,6 +477,35 @@ void modify()
     }
 }
 
+void deleteBook ()
+{
+    string isbn;
+    int i, index = 0, valid = 0;
+    Book temp;
+
+    printf("Enter ISBN of book to delete(ISBN must be 13 digits - All numbers): ");
+    do
+    {
+        fflush(stdin);
+        gets(isbn);
+        if (valid = isValidISBN(isbn))
+        {
+            index = searchByISBN(isbn);
+            if (index == -1)
+            {
+                printf("This ISBN is not found. Enter another one: ");
+            }
+        }
+    }
+    while (!valid || index == -1);
+
+    temp = info[index];
+    info[index] = info[infoSize - 1];
+    info[infoSize - 1] = temp;
+    --infoSize;
+}
+
+
 void save()
 {
     int i;
@@ -524,18 +553,18 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
     readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
     printf("Welcome To our Library System\n\n");
 
-letter :
+    /*letter :
 
-    fflush(stdin);
-    printf("Please Enter letter 'l' to login or 'q' to quit : ");
-    scanf("%c", &option);
-    option = tolower(option);
-    if(option == 'l')
-        login(numofTrials, numOfLines(fileCredentials) / 2);
-    else if(option == 'q')
-        return;
-    else
-        goto letter;
+        fflush(stdin);
+        printf("Please Enter letter 'l' to login or 'q' to quit : ");
+        scanf("%c", &option);
+        option = tolower(option);
+        if(option == 'l')
+            login(numofTrials, numOfLines(fileCredentials) / 2);
+        else if(option == 'q')
+            return;
+        else
+            goto letter;*/
     // if the program reach this point that mean the user logged in successfully
     load(fileBooks); // calls function to store books.txt data into the global array "info"
 
@@ -551,32 +580,33 @@ selectOption :
     scanf("%c", &option);
     option = tolower(option);
     if (option == 'a')
-        printf("function is not available now\n");
+        //addBook();
+
     else if (option == 'd')
-        printf("function is not available now\n");
+        deleteBook();
+
     else if (option == 'm')
         modify();
+
     else if (option == 's')
-    {
         query();
-    }
+
     else if (option == 'v')
-    {
         advancedSearch();
-    }
+
     else if (option == 'p')
-    {
         printAll();
-    }
+
     else if (option == 'q')
     {
         if(!quit())
             return;
     }
+
     else
-    {
         printf("Wrong value\n");
-    }
+
+
     while(1)
     {
         printf("\n\nDo you want to select more options (y,n) ? ");
@@ -594,7 +624,7 @@ selectOption :
             while(1)
             {
                 system("cls");
-                printf("\n\nDo you want to save your EDITS (y,n) ? ");
+                printf("Do you want to save your EDITS (y,n) ? ");
                 fflush(stdin);
                 scanf("%c", &option);
                 option = tolower(option);
