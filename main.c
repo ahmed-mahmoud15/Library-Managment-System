@@ -541,7 +541,8 @@ letter :
 
 selectOption :
 
-    printf("\n\nYou can choose one of our options by :\n");
+    system("cls");
+    printf("You can choose one of our options by :\n");
     printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo QUIT enter 'q'\n");
 
 
@@ -583,11 +584,16 @@ selectOption :
         scanf("%c", &option);
         option = tolower(option);
         if (option == 'y')
+        {
+            system("cls");
             goto selectOption;
+        }
+
         else if(option == 'n')
         {
             while(1)
             {
+                system("cls");
                 printf("\n\nDo you want to save your EDITS (y,n) ? ");
                 fflush(stdin);
                 scanf("%c", &option);
