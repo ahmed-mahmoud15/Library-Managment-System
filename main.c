@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #define MAX 100
 #define numofTrials 5
 
@@ -120,7 +121,7 @@ void printBook (int i)
     printf("Title: %s\n", info[i].title);
     printf("Author: %s\n", info[i].author);
     printf("Quantity: %d\n", info[i].quantity);
-    printf("Price: %.2f$\n", info[i].price);
+    printf("Price: $%.2f\n", info[i].price);
     printDate(info[i].publication);
 }
 
@@ -142,16 +143,67 @@ void Query (string isbn)
     }
 }
 
+void advancedSearch (string word)
+{
+    int i, flag = 0;
+    for(i = 0; i < infoSize ; i++)
+    {
+        if (strstr(info[i].title, word))
+        {
+            printBook(i);
+            flag=1;
+        }
+    }
+    if (flag == 0)
+    {
+        printf("No matches are found");
+    }
+}
+
 void printAll()
 {
-    int i;
-    printf("\nSort by:\nTitle\nPrice\nDate of Publication\n");
+    int i, flag = 0, length;
+    string sortMethod;
+    string title = "title", price = "price", date = "date";
+    printf("-----------------------------------------\n");
+    printf("Sort by:\nTitle\nPrice\nDate of Publication\n\n");
+    printf("-----------------------------------------\n");
+    do
+    {
+        printf("|To choose a sorting method, enter \"TITLE\", \"PRICE\", or \"DATE\"|\n");
+        scanf("%s", sortMethod);
+        length = strlen(sortMethod);
+        for (i = 0; i < length; i++)
+        {
+            sortMethod[i] = tolower(sortMethod[i]);
+        }
+        if (!strcmp(title, sortMethod))
+        {
+            sortByTitle();
+            flag = 1;
+        }
+        else if (!strcmp(price, sortMethod))
+        {
+            sortByPrice();
+            flag = 2;
+        }
+        else if (!strcmp(date, sortMethod))
+        {
+            sortByDate();
+            flag = 3;
+        }
+        else
+            printf("Enter a valid method!\n");
+    }
+    while (!flag);
     printf("-----------------------------------------\n");
     for (i = 0; i < infoSize; i++)
     {
         printBook(i);
         printf("-----------------------------------------\n");
     }
+
+}
 
 }
 void sortByTitle() // function that sorts global info array by title from A to Z
@@ -226,22 +278,6 @@ void sortByPrice () // function that sorts global info array by price from cheap
             break;
     }
 }
-void advancedSearch (string word)
-{
-    int i, flag = 0;
-    for(i = 0; i < infoSize ; i++)
-    {
-        if (strstr(info[i].title, word))
-        {
-            printBook(i);
-            flag=1;
-        }
-    }
-    if (flag == 0)
-    {
-        printf("No matches are found");
-    }
-}
 
 int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
 {
@@ -291,14 +327,14 @@ void add() //unfinished
 
 void modify() // unfinished function
 {
-    string isbn;
-    int check = 1, index = 0, i;
+    string isbn, yes = "yes", no = "no", answer;
+    int check = 1, index = 0;
     printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
         scanf("%s", isbn);
         if (isValidISBN(isbn))
-            for (i = 0; i < infoSize; i++)
+            for (i = 0; i < infoSize; i++1  )
             {
                 check = strcmp(isbn, info[i].ISBN);
                 if (!check)
@@ -309,7 +345,88 @@ void modify() // unfinished function
             }
     }
     while (!isValidISBN(isbn) && !check);
-
+    printf("Would you like to change the title from %s?\n", info[index].title);
+    do
+    {
+        printf("Enter (YES or NO):\n")
+        scanf("%s", answer);
+    }
+    while (!strcasecmp(answer, no) || !strcasecmp(answer, yes));
+    if (!strcasecmp(answer, yes))
+    {
+        printf("Enter New Title: ");
+        gets(info[index].title);
+    }
+    else if (!strcasecmp(answer, no))
+    {
+        printf("Title will remain as %s.\n", info[index].title);
+    }
+    printf("Would you like to change the author's name from %s?\n", info[index].author);
+    do
+    {
+        printf("Enter (YES or NO):\n")
+        scanf("%s", answer);
+    }
+    while (!strcasecmp(answer, no) || !strcasecmp(answer, yes));
+    if (!strcasecmp(answer, yes))
+    {
+        printf("Enter New Author's name: ");
+        gets(info[index].author);
+    }
+    else if (!strcasecmp(answer, no))
+    {
+        printf("Author's name will remain as %s.\n", info[index].author);
+    }
+    printf("Would you like to change the quantity available from %d?\n", info[index].quantity);
+    do
+    {
+        printf("Enter (YES or NO):\n")
+        scanf("%s", answer);
+    }
+    while (!strcasecmp(answer, no) || !strcasecmp(answer, yes));
+    if (!strcasecmp(answer, yes))
+    {
+        printf("Enter New Title: ");
+        scanf("%d", &info[index].quantity);
+    }
+    else if (!strcasecmp(answer, no))
+    {
+        printf("Quantity will remain as %d.\n", info[index].quantity);
+    }
+    printf("Would you like to change the price from $%.2f?\n", info[index].price);
+    do
+    {
+        printf("Enter (YES or NO):\n")
+        scanf("%s", answer);
+    }
+    while (!strcasecmp(answer, no) || !strcasecmp(answer, yes));
+    if (!strcasecmp(answer, yes))
+    {
+        printf("Enter New Price: ");
+        scanf("%f", &info[index].price)
+    }
+    else if (!strcasecmp(answer, no))
+    {
+        printf("Price will remain as $%.2f.\n", info[index].price);
+    }
+    printf("Would you like to change the date published from %d-%d", info[index].publication.month, info[index].publication.year);
+    do
+    {
+        printf("Enter (YES or NO):\n")
+        scanf("%s", answer);
+    }
+    while (!strcasecmp(answer, no) || !strcasecmp(answer, yes));
+    if (!strcasecmp(answer, yes)) // MUST VALIDATE
+    {
+        printf("Enter New Publication Date Month: ");
+        scanf("%d", &[index].publication.month);
+        printf("Enter New Publication Date Year: ");
+        scanf("%d", &[index].publication.year);
+    }
+    else if (!strcasecmp(answer, no))
+    {
+        printf("Publication Date will remain as %d-%d.\n", info[index].publication.month, info[index].publication.year);
+    }
 }
 
 
