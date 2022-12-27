@@ -147,7 +147,7 @@ int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
     if (counter == 13 && !flag)
         return 1;
     else
-        printf("Enter valid ISBN!\n");
+        printf("Enter valid ISBN: ");
     return 0;
 }
 
@@ -204,26 +204,40 @@ int isValidQuantity (int quantity)
     return quantity;
 }
 
-void Query (string isbn)
+int searchByISBN(string isbn)
 {
-    int i,flag=0;
-    for(i=0; i<infoSize; i++)
+    int i, flag = 0;
+    for(i = 0; i < infoSize; i++)
     {
         if (strcmp(isbn, info[i].ISBN) == 0)
         {
-            printBook(i);
-            flag=1;
-            break;
+            return i;
         }
     }
-    if (flag==0)
+    return -1;
+}
+
+void query ()
+{
+    string isbn;
+    printf("Enter a book ISBN: ");
+    scanf("%s", isbn);
+    int index = searchByISBN(isbn);
+    if (index > -1)
+    {
+        printBook(index);
+    }
+    else
     {
         printf("The ISBN entered is not available\n");
     }
 }
 
-void advancedSearch (string word)
+void advancedSearch ()
 {
+    string word;
+    printf("Enter a book title: ");
+    scanf("%s", word);
     int i,flag=0;
     for(i=0; i<infoSize; i++)
     {
@@ -235,7 +249,7 @@ void advancedSearch (string word)
     }
     if (flag==0)
     {
-        printf("No matches are found");
+        printf("No matches are found\n");
     }
 }
 
@@ -355,25 +369,24 @@ void printAll()
 void modify()
 {
     string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor;
-    int i, found = 1, index = 0, inputmonth, inputyear, inputQuantity;
+    int i, index = 0, isValid = 0, inputmonth, inputyear, inputQuantity;
     float inputprice;
     printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
         gets(isbn);
-        if (isValidISBN(isbn))
-            for (i = 0; i < infoSize; i++)
+        isValid = isValidISBN(isbn);
+        if (isValid)
+        {
+            index = searchByISBN(isbn);
+            if (index == -1)
             {
-                found = strcmp(isbn, info[i].ISBN);
-                if (!found)
-                {
-                    index = i;
-                    break;
-                }
+                printf("This ISBN is not found. Enter another one: ");
             }
+        }
     }
-    while (!isValidISBN(isbn) && !found);
+    while (!isValid || index == -1);
     printf("Would you like to change the title from %s?\n", info[index].title);
     do
     {
@@ -499,17 +512,11 @@ selectOption :
         modify();
     else if (option == 's')
     {
-        string isbn;
-        printf("Enter a book ISBN: ");
-        scanf("%s",isbn);
-        Query(isbn);
+        query();
     }
     else if (option == 'v')
     {
-        string word;
-        printf("Enter a subtitle: ");
-        scanf("%s",word);
-        advancedSearch(word);
+        advancedSearch();
     }
     else if (option == 'p')
     {
