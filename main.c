@@ -4,7 +4,6 @@
 #include <ctype.h>
 #define MAX 100
 #define numofTrials 5
-#define std
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
 
@@ -33,8 +32,6 @@ typedef struct Account // struct that holds account information (username and pa
 Book info[MAX]; // global array of struct Book with up to MAX number of elements
 Account Credentials[MAX]; // global array of struct Account with up to MAX number of elements
 int infoSize; // global variable for utilized size of info
-
-int fflush(FILE *stream);
 
 int numOfLines(FILE *fileCredentials) // function that counts the number of lines in a file
 {
