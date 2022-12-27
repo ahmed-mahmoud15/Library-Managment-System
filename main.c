@@ -271,6 +271,52 @@ void sortByPrice () // function that sorts global info array by price from cheap
     }
 }
 
+int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
+{
+    int i, flag = 1, counter = 0;
+    for (i = 0; isbn[i] != '\0'; i++)
+    {
+        flag = 0;
+        if (isbn[i] >= 0 && isbn[i] <= 9)
+            counter++;
+        else
+        {
+            flag = 1;
+            break;
+        }
+    }
+    if (counter == 13 && !flag)
+        return 1;
+    else
+    {
+        printf("Enter valid ISBN!");
+        return 0;
+    }
+}
+
+void modify() // unfinished function 
+{
+    string isbn;
+    int check = 1, index = 0;
+    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
+    do
+    {
+        scanf("%s", isbn);
+        if (isValidISBN(isbn))
+            for (i = 0; i < infoSize; i++1)
+            {
+                check = strcmp(isbn, info[i].ISBN);
+                if (!check)
+                {
+                    index = i;
+                    break;
+                }
+            }
+    }
+    while (!isValidISBN(isbn) && !check);
+    
+}
+
 int main()
 {
     int i, nLines;
