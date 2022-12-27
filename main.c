@@ -266,6 +266,29 @@ int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
     }
 }
 
+void add() //unfinished
+{
+    string isbn;
+
+    printf("enter ISBN for the book to be added  (ISBN must be 13 digits - All numbers):");
+
+    do
+    {
+        scanf("%s",isbn);
+    }while(!isValidISBN(isbn));
+    info.ISBN=isbn;
+    printf("enter the title of the book :");
+    gets(info.title);
+    printf("\nenter the author name :");
+    gets(info.author);
+    printf("\nenter the quantity :");
+    scanf("%d",&info.quantity);
+    printf("\nenter the prize :");
+    scanf("%f",&info.prize);
+    printf("\nenter the date of publication ") //mestny as2lko 3leeha 
+
+}
+
 void modify() // unfinished function
 {
     string isbn;
