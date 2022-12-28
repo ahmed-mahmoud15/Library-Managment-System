@@ -149,13 +149,16 @@ int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
     return 0;
 }
 
-int isValidMonth (int month)
+int isValidMonth (string OLDmonth)
 {
+    int month = isValidQuantity(OLDmonth);
+
     while (month > 12 || month < 1)
     {
         if (month > 12 || month < 1)
         {
             printf("Enter a valid month(1 to 12): ");
+
             scanf("%d", &month);
             printf("\n");
         }
@@ -163,8 +166,10 @@ int isValidMonth (int month)
     return month;
 }
 
-int isValidYear (int year)
+int isValidYear (string OLDyear)
 {
+    int year = isValidQuantity(OLDyear);
+
     while (year > 2022 || year < 0)
     {
         if (year > 2022 || year < 0)
@@ -405,8 +410,8 @@ void printAll()
 
 void addBook()
 {
-    string isbn, inputQuantity, inputprice;
-    int index = 0, isValid = 0, inputmonth, inputyear;
+    string isbn, inputQuantity, inputprice, inputmonth, inputyear;
+    int index = 0, isValid = 0;
     char option;
     printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
     do
@@ -423,14 +428,14 @@ void addBook()
             if(index != -1)
             {
                 printf("\nThis Book is already exists!");
-                printf("\nEnter 'a' to enter new ISBN\nenter 'b' to go back to menu");
+                printf("\nEnter 'n' to enter new ISBN\nEnter 'm' to go back to menu");
                 fflush(stdin);
                 printf("\n\nEnter the letter : ");
                 scanf("%c", &option);
                 option = tolower(option);
-                if(option == 'a')
+                if(option == 'n')
                     printf("\nEnter another ISBN :");
-                else if(option == 'b')
+                else if(option == 'm')
                     return;
             }
         }
@@ -447,19 +452,19 @@ void addBook()
 
     printf("\nEnter the Qauntity : ");
     scanf("%s", inputQuantity);
-    info[infoSize].quantity=isValidQuantity(inputQuantity);
+    info[infoSize].quantity = isValidQuantity(inputQuantity);
 
     printf("\nEnter the price:");
     scanf("%s", inputprice);
     info[infoSize].price = isValidPrice(inputprice);
 
     printf("\nEnter the Publication Date Month: ");
-    scanf("%d",&inputmonth);
-    info[infoSize].publication.month=isValidMonth(inputmonth);
+    scanf("%s",inputmonth);
+    info[infoSize].publication.month = isValidMonth(inputmonth);
 
     printf("\nEnter the Publication Date Year: ");
-    scanf("%d",&inputyear);
-    info[infoSize].publication.year=isValidYear(inputyear);
+    scanf("%s",inputyear);
+    info[infoSize].publication.year = isValidYear(inputyear);
 
     printf("\nThe new book had been added successfully.");
     printBook(infoSize);
@@ -468,8 +473,8 @@ void addBook()
 
 void modify()
 {
-    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice;
-    int i, index = 0, isValid = 0, inputmonth, inputyear;
+    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice, inputmonth, inputyear;
+    int i, index = 0, isValid = 0;
     printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
@@ -566,10 +571,10 @@ void modify()
     if (!strcasecmp(answer, yes)) // MUST VALIDATE
     {
         printf("Enter New Publication Date Month: ");
-        scanf("%d", &inputmonth);
+        scanf("%s", inputmonth);
         info[index].publication.month = isValidMonth(inputmonth);
         printf("Enter New Publication Date Year: ");
-        scanf("%d", &inputyear);
+        scanf("%s", inputyear);
         info[index].publication.year = isValidYear(inputyear);
     }
     else if (!strcasecmp(answer, no))
