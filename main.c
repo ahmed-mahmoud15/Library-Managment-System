@@ -36,6 +36,91 @@ Account Credentials[MAX]; // global array of struct Account with up to MAX numbe
 int infoSize; // global variable for utilized size of info
 
 
+int numOfLines(FILE *fileCredentials); // function that counts the number of lines in a file
+
+void readCredentials(FILE *fileCredentials, int n); // function that stores user name and password information into the Credentials struct
+
+
+int login(int trials, int n); // login function that prompts user to enter a username and password and returns 1 if the user inputs valid credentials
+
+
+void load(FILE * fileBooks); // load function that stores book.txt file data into the global array "info"
+
+void printDate(Date date);
+
+void printBook (int i);
+
+int isValidISBN (string isbn); // returns 1 if valid 0 if invalid
+
+int isValidMonth (string OLDmonth);
+
+int isValidYear (string OLDyear);
+
+float isValidPrice(string price);
+
+int isValidQuantity (string quantity);
+
+int searchByISBN(string isbn);
+
+void query ();
+
+void advancedSearch ();
+
+void sortByTitle(); // function that sorts global info array by title from A to Z
+
+void sortByDate (); // function that sorts global info array by date from newer to older publications
+
+void sortByPrice (); // function that sorts global info array by price from cheaper to more expensive
+
+void printTable();
+
+void printAll();
+
+void addBook();
+
+void modify();
+
+void deleteBook ();
+
+void save();
+
+void quit();
+
+void chooseOption();
+
+void menu(FILE * fileCredentials, FILE * fileBooks);
+
+int main()
+{
+
+    FILE * fileCredentials = fopen("files//credentials.txt", "r"); // initializes file pointer that opens credentials.txt file to be read only
+
+    if (fileCredentials == NULL)
+    {
+        printf("Error while opening the file"); // Error message if credentials.txt file is not found
+        return 1; // Ends program by returning 1 to show error
+    }
+
+    FILE * fileBooks = fopen("files//books.txt", "r"); // initializes file pointer that opens books.txt file
+
+    if (fileBooks == NULL)
+    {
+        printf("Error while opening the books.txt file"); // Error message if books.txt file is not found
+        return 1; // Ends program by returning 1 to show error
+    }
+
+
+    infoSize = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
+
+    menu(fileCredentials, fileBooks);
+
+    fclose(fileCredentials); // closes credentials.txt file
+
+    fclose(fileBooks); // closes books.txt file
+
+    return 0;
+}
+
 int numOfLines(FILE *fileCredentials) // function that counts the number of lines in a file
 {
     rewind(fileCredentials); // function repositions the file pointer to the beginning of the file
@@ -850,35 +935,4 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         else
             continue;
     }
-}
-
-int main()
-{
-
-    FILE * fileCredentials = fopen("files//credentials.txt", "r"); // initializes file pointer that opens credentials.txt file to be read only
-
-    if (fileCredentials == NULL)
-    {
-        printf("Error while opening the file"); // Error message if credentials.txt file is not found
-        return 1; // Ends program by returning 1 to show error
-    }
-
-    FILE * fileBooks = fopen("files//books.txt", "r"); // initializes file pointer that opens books.txt file
-
-    if (fileBooks == NULL)
-    {
-        printf("Error while opening the books.txt file"); // Error message if books.txt file is not found
-        return 1; // Ends program by returning 1 to show error
-    }
-
-
-    infoSize = numOfLines(fileBooks); // integer that gets number of lines in books.txt file
-
-    menu(fileCredentials, fileBooks);
-
-    fclose(fileCredentials); // closes credentials.txt file
-
-    fclose(fileBooks); // closes books.txt file
-
-    return 0;
 }
