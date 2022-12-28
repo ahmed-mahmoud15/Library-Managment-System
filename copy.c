@@ -424,17 +424,11 @@ void addBook()
         fflush(stdin);
         gets(isbn);
         isValid = isValidISBN(isbn);
-        if(!isValid)
-            printf("\nISBN is InValid!\n"
-                   "Please enter a valid one (ISBN must be 13 digits - All numbers) : ");
-
-        else if(isValid)
-        {
 
             index = searchByISBN(isbn);
             if(index != -1)
             {
-                printf("\nThis Book is already exists!");
+                printf("\nThis Book already exists!");
                 printf("\nEnter 'n' to enter new ISBN\n"
                        "Enter 'm' to go back to menu");
 
@@ -447,7 +441,6 @@ void addBook()
                 else if(option == 'm')
                     return;
             }
-        }
     }
     while(!isValid || index  != -1);
     strcpy(info[infoSize].ISBN, isbn);
@@ -459,7 +452,7 @@ void addBook()
     printf("\nEnter the Author Name : ");
     gets(info[infoSize].author);
 
-    printf("\nEnter the Qauntity : ");
+    printf("\nEnter the Quantity : ");
     scanf("%s", inputQuantity);
     info[infoSize].quantity = isValidQuantity(inputQuantity);
 
