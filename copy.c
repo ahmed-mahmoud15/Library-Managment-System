@@ -418,29 +418,37 @@ void addBook()
     string isbn, inputQuantity, inputprice, inputmonth, inputyear;
     int index = 0, isValid = 0;
     char option;
-    printf("\nEnter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
+    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : \n");
     do
     {
         fflush(stdin);
         gets(isbn);
         isValid = isValidISBN(isbn);
 
-            index = searchByISBN(isbn);
-            if(index != -1)
-            {
-                printf("\nThis Book already exists!");
-                printf("\nEnter 'n' to enter new ISBN\n"
-                       "Enter 'm' to go back to menu");
+        index = searchByISBN(isbn);
 
+        if(index != -1)
+        {
+            printf("\nThis Book already exists!\n");
+            printf("Enter \"n\" to enter new ISBN\n"
+                   "Enter \"m\" to go back to menu\n");
+            do
+            {
                 fflush(stdin);
-                printf("\n\nEnter the letter : ");
+                printf("\nEnter \"n\" or \"m\" : \n");
                 scanf("%c", &option);
                 option = tolower(option);
+                printf("%c\n", option);
                 if(option == 'n')
-                    printf("\nEnter another ISBN :");
+                    printf("Enter another ISBN : \n");
                 else if(option == 'm')
-                    return;
+                    chooseOption();
+                else
+                    printf("Invalid input!\nEnter 'n' to enter new ISBN\n"
+                           "Enter 'm' to go back to menu\n");
             }
+            while (option != 'n' && option != 'm');
+        }
     }
     while(!isValid || index  != -1);
     strcpy(info[infoSize].ISBN, isbn);
@@ -720,7 +728,10 @@ void chooseOption()
         quit();
 
     else
-        printf("Wrong value\n");
+        {
+            printf("Wrong value\n");
+            chooseOption();
+        }
 }
 
 void menu(FILE * fileCredentials, FILE * fileBooks)
@@ -731,7 +742,7 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
     printf("Welcome To our Library System :)");
     printf("\n\n=======================================\n\n");
 
-    /*while(1)
+    while(1)
     {
         fflush(stdin);
         printf("Please Enter letter 'l' to login or 'q' to quit : ");
@@ -744,10 +755,13 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         }
 
         else if(option == 'q')
-            exit(0);
+            {
+                printf("\nGoodbye, have a nice day! :D\n");
+                exit(0);
+            }
         else
             continue;
-    }*/
+    }
 
     // if the program reach this point that mean the user logged in successfully
     load(fileBooks); // calls function to store books.txt data into the global array "info"
