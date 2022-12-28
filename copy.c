@@ -107,6 +107,7 @@ void load(FILE * fileBooks) // load function that stores book.txt file data into
         info[i].publication.year = atoi(strtok(NULL, "-"));
     }
 }
+
 void printDate(Date date)
 {
     string months[12] =
@@ -587,6 +588,7 @@ void deleteBook ()
 {
     string isbn;
     int i, index = 0, valid = 0;
+    char option;
     Book temp;
 
     printf("Enter ISBN of book to delete(ISBN must be 13 digits - All numbers): ");
@@ -594,13 +596,25 @@ void deleteBook ()
     {
         fflush(stdin);
         gets(isbn);
-        if (valid = isValidISBN(isbn))
+        valid = isValidISBN(isbn);
+
+        if (valid)
         {
             index = searchByISBN(isbn);
             if (index == -1)
             {
-                printf("This ISBN is not found. Enter another one: ");
+                printf("This ISBN is not found!\n");
+                printf("\nEnter 'd' to enter another ISBN\nEnter 'm' to go back to menu");
+                fflush(stdin);
+                printf("\n\nEnter the letter : ");
+                scanf("%c", &option);
+                option = tolower(option);
+                if(option == 'd')
+                    printf("\nEnter another ISBN :");
+                else if(option == 'm')
+                    return;
             }
+
         }
     }
     while (!valid || index == -1);
