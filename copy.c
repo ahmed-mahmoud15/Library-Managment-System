@@ -742,7 +742,7 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
     printf("Welcome To our Library System :)");
     printf("\n\n=======================================\n\n");
 
-    while(1)
+    /*while(1)
     {
         fflush(stdin);
         printf("Please Enter letter 'l' to login or 'q' to quit : ");
@@ -761,7 +761,7 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
             }
         else
             continue;
-    }
+    }*/
 
     // if the program reach this point that mean the user logged in successfully
     load(fileBooks); // calls function to store books.txt data into the global array "info"
