@@ -67,7 +67,7 @@ int login(int trials, int n) // login function that prompts user to enter a user
     if (trials == 0) // condition that checks whether the user used up the limited number of trials
     {
         printf("Try again later.");
-        return 0;
+        exit(0);
     }
     string user, pass;
 
@@ -405,8 +405,8 @@ void printAll()
 
 void addBook()
 {
-    string isbn, inputQuantity;
-    int index = 0, isValid = 0, inputmonth, inputyear, inputprice;
+    string isbn, inputQuantity, inputprice;
+    int index = 0, isValid = 0, inputmonth, inputyear;
     char option;
     printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
     do
@@ -423,7 +423,7 @@ void addBook()
             if(index != -1)
             {
                 printf("\nThis Book is already exists!");
-                printf("\nenter 'a' to enter new ISBN\nenter 'b' to go back to menu");
+                printf("\nEnter 'a' to enter new ISBN\nenter 'b' to go back to menu");
                 fflush(stdin);
                 printf("\n\nEnter the letter : ");
                 scanf("%c", &option);
@@ -457,7 +457,7 @@ void addBook()
     scanf("%d",&inputmonth);
     info[infoSize].publication.month=isValidMonth(inputmonth);
 
-    printf("\nenter the Publication Date Year: ");
+    printf("\nEnter the Publication Date Year: ");
     scanf("%d",&inputyear);
     info[infoSize].publication.year=isValidYear(inputyear);
 
@@ -606,7 +606,6 @@ void deleteBook ()
     --infoSize;
 }
 
-
 void save()
 {
     int i;
@@ -634,18 +633,29 @@ void save()
     fclose(fileBooks);
 }
 
-int quit()
+void quit()
 {
     char option;
-    printf("\n\nYour changes will be discarded (y/n) ");
+    printf("\n\nAre you sure you want to exit the program ? (y/n) ");
     fflush(stdin);
     scanf("%c", &option);
     option = tolower(option);
 
     if(option == 'y')
-        return 0;
+    {
+        printf("\n\nWould you like to save changes -IF ANY- (y/n) ");
+        fflush(stdin);
+        scanf("%c", &option);
+        option = tolower(option);
+
+        if(option == 'y')
+            save();
+        else
+            exit(0);
+
+    }
     else
-        return 1;
+        return;
 }
 
 void menu(FILE * fileCredentials, FILE * fileBooks)
@@ -654,7 +664,8 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
     readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
     printf("Welcome To our Library System\n\n");
 
-    /*letter :
+    letter :
+
         fflush(stdin);
         printf("Please Enter letter 'l' to login or 'q' to quit : ");
         scanf("%c", &option);
@@ -662,9 +673,9 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         if(option == 'l')
             login(numofTrials, numOfLines(fileCredentials) / 2);
         else if(option == 'q')
-            return;
+            exit(0);
         else
-            goto letter;*/
+            goto letter;
     // if the program reach this point that mean the user logged in successfully
     load(fileBooks); // calls function to store books.txt data into the global array "info"
 
@@ -698,10 +709,7 @@ selectOption :
         printAll();
 
     else if (option == 'q')
-    {
-        if(!quit())
-            return;
-    }
+        quit();
 
     else
         printf("Wrong value\n");
