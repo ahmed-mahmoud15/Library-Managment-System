@@ -423,7 +423,7 @@ void addBook()
     info[infoSize].publication.year=isValidYear(inputyear);
 
     printf("\nThe new book had been added successfully.");
-    printBook(i);
+    printBook(infoSize);
     infoSize++;
 }
 void modify()
