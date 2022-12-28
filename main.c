@@ -369,7 +369,7 @@ void addBook()
     int i, index = 0, isValid = 0, inputmonth, inputyear, inputQuantity;
     float inputprice;
     char option;
-    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
+    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
