@@ -363,7 +363,69 @@ void printAll()
     }
 
 }
+void addBook()
+{
+    string isbn;
+    int i, index = 0, isValid = 0, inputmonth, inputyear, inputQuantity;
+    float inputprice;
+    char option;
+    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
+    do
+    {
+        fflush(stdin);
+        gets(isbn);
+        isValid = isValidISBN(isbn);
+        if(!isValid)
+            printf("\nISBN is InValid!\nplease enter a valid one (ISBN must be 13 digits - All numbers): ");
+        else if(isValid)
+        {
 
+            index = searchByISBN(isbn);
+            if(index != -1)
+            {
+                printf("\nThis Book is already exists!");
+                printf("\nenter 'a' to enter new ISBN\nenter 'b' to go back to menu");
+                fflush(stdin);
+                printf("\n\nEnter the letter : ");
+                scanf("%c", &option);
+                option = tolower(option);
+                if(option == 'a')
+                    printf("\nenter another ISBN :");
+                else if(option == 'b')
+                    return;
+            }
+        }
+    }
+    while(!isValid || index  != -1);
+    strcpy(info[infoSize].ISBN,isbn);
+
+    printf("\nEnter the Title :");
+    fflush(stdin);
+    gets(info[infoSize].title);
+
+    printf("\nEnter the Author Name :");
+    gets(info[infoSize].author);
+
+    printf("\nEnter the Qauntity : ");
+    scanf("%d",&inputQuantity);
+    info[infoSize].quantity=isValidQuantity(inputQuantity);
+
+    printf("\nEnter the price:");
+    scanf("%f",&inputprice);
+    info[infoSize].price=isValidPrice(inputprice);
+
+    printf("\nEnter the Publication Date Month: ");
+    scanf("%d",&inputmonth);
+    info[infoSize].publication.month=isValidMonth(inputmonth);
+
+    printf("\nenter the Publication Date Year: ");
+    scanf("%d",&inputyear);
+    info[infoSize].publication.year=isValidYear(inputyear);
+
+    printf("\nThe new book had been added successfully.");
+    printBook(i);
+    infoSize++;
+}
 void modify()
 {
     string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor;
@@ -554,7 +616,6 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
     printf("Welcome To our Library System\n\n");
 
     /*letter :
-
         fflush(stdin);
         printf("Please Enter letter 'l' to login or 'q' to quit : ");
         scanf("%c", &option);
@@ -580,7 +641,7 @@ selectOption :
     scanf("%c", &option);
     option = tolower(option);
     if (option == 'a')
-        //addBook();
+        addBook();
 
     else if (option == 'd')
         deleteBook();
