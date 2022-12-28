@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
 #define MAX 256
 #define numofTrials 5
+#define resetTimer 3
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
 
@@ -107,6 +109,7 @@ void load(FILE * fileBooks) // load function that stores book.txt file data into
         info[i].publication.year = atoi(strtok(NULL, "-"));
     }
 }
+
 void printDate(Date date)
 {
     string months[12] =
@@ -114,7 +117,7 @@ void printDate(Date date)
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-    printf("Published: %s %d\n\n", months[date.month - 1], date.year);
+    printf("%s %d", months[date.month - 1], date.year);
 }
 
 void printBook (int i)
@@ -124,7 +127,9 @@ void printBook (int i)
     printf("Author: %s\n", info[i].author);
     printf("Quantity: %d\n", info[i].quantity);
     printf("Price: $%.2f\n", info[i].price);
+    printf("Published: ");
     printDate(info[i].publication);
+    printf("\n\n");
 }
 
 int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
@@ -149,32 +154,74 @@ int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
     return 0;
 }
 
-int isValidMonth (int month)
+int isValidMonth (string OLDmonth)
 {
-    while (month > 12 || month < 1)
+    int i, valid, count, validmonth;
+    do
     {
-        if (month > 12 || month < 1)
+        valid = 0;
+        i = 0;
+        count = 0;
+        while (OLDmonth[i] != '\0')
         {
-            printf("Enter a valid month(1 to 12): ");
-            scanf("%d", &month);
-            printf("\n");
+            count++;
+            if (!isdigit(OLDmonth[i]))
+            {
+                valid = 0;
+                printf("Enter a valid month (whole number from 1 to 12): ");
+                scanf("%s", OLDmonth);
+                break;
+            }
+            else
+                valid = 1;
+            i++;
+        }
+        if (valid)
+            validmonth = atoi(OLDmonth);
+
+        if (validmonth > 12 || validmonth < 1)
+        {
+            printf("Enter a valid month (whole number from 1 to 12): ");
+            scanf("%s", OLDmonth);
         }
     }
-    return month;
+    while (!valid || !count || validmonth > 12 || validmonth < 1);
+    return validmonth;
 }
 
-int isValidYear (int year)
+int isValidYear (string OLDyear)
 {
-    while (year > 2022 || year < 0)
+    int i, valid, count, validyear;
+    do
     {
-        if (year > 2022 || year < 0)
+        valid = 0;
+        i = 0;
+        count = 0;
+        while (OLDyear[i] != '\0')
         {
-            printf("Enter a valid year(0 to 2022): ");
-            scanf("%d", &year);
-            printf("\n");
+            count++;
+            if (!isdigit(OLDyear[i]))
+            {
+                valid = 0;
+                printf("Enter a valid year (whole number 0 to 2022): ");
+                scanf("%s", OLDyear);
+                break;
+            }
+            else
+                valid = 1;
+            i++;
+        }
+        if (valid)
+            validyear = atoi(OLDyear);
+
+        if (validyear > 2022 || validyear < 0)
+        {
+            printf("Enter a valid year (whole number 0 to 2022): ");
+            scanf("%s", OLDyear);
         }
     }
-    return year;
+    while (!valid || !count || validyear > 2022 || validyear < 0);
+    return validyear;
 }
 
 float isValidPrice(string price)
@@ -191,12 +238,12 @@ float isValidPrice(string price)
         {
             count++;
             if (price[i] == '.')
-                    ++pointcounter;
+                ++pointcounter;
 
-            if (!isdigit(price[i]) && price[i] != '.' || pointcounter > 1)
+            if ((!isdigit(price[i]) && price[i] != '.') || pointcounter > 1)
             {
                 valid = 0;
-                printf("Enter a valid price (whole or decimal number): ");
+                printf("Enter a valid price (whole or decimal number ex. 2.15): ");
                 scanf("%s", price);
                 break;
             }
@@ -226,7 +273,7 @@ int isValidQuantity (string quantity)
             if (!isdigit(quantity[i]))
             {
                 valid = 0;
-                printf("Enter a valid quantity (number greater than or equal to 0): ");
+                printf("Enter a valid quantity (whole number greater than or equal to 0 ex. 4): ");
                 scanf("%s", quantity);
                 break;
             }
@@ -243,7 +290,7 @@ int isValidQuantity (string quantity)
 
 int searchByISBN(string isbn)
 {
-    int i, flag = 0;
+    int i;
     for(i = 0; i < infoSize; i++)
     {
         if (strcmp(isbn, info[i].ISBN) == 0)
@@ -257,8 +304,14 @@ int searchByISBN(string isbn)
 void query ()
 {
     string isbn;
-    printf("Enter a book ISBN: ");
-    scanf("%s", isbn);
+    int isValid = 0;
+    printf("Enter a valid book ISBN: ");
+    do
+    {
+        scanf("%s", isbn);
+        isValid = isValidISBN(isbn);
+    }
+    while(!isValid);
     int index = searchByISBN(isbn);
     if (index > -1)
     {
@@ -363,18 +416,39 @@ void sortByPrice () // function that sorts global info array by price from cheap
     }
 }
 
+void printTable()
+{
+    int i;
+    printf("  # | %-13s | %-50s | %-30s | %-6s | %-8s | %s \n", "ISBN", "Title", "Author Name", "Price", "Quantity", "Publication Date");
+    for (i = 0; i < 150; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
+    for (i= 0; i < infoSize; i++)
+    {
+        string price, quantity;
+        snprintf(quantity, 8, "%d", info[i].quantity);
+        snprintf(price, 6, "%.2f", info[i].price);
+        printf(" %02d | %-13s | %-50s | %-30s | $%-6s | %-8s | ", i+1, info[i].ISBN, info[i].title, info[i].author, price, quantity);
+        printDate(info[i].publication);
+        printf("\n");
+    }
+}
 void printAll()
 {
-    int i, flag = 0;
+    int flag = 0;
     string sortMethod;
     string title = "title", price = "price", date = "date";
-    printf("-----------------------------------------\n");
-    printf("Sort by:\nTitle\nPrice\nDate of Publication\n\n");
-    printf("-----------------------------------------\n");
+    printf("-----------------------------------------\n\n");
+    printf("Sort by : \nTitle \nPrice \nDate of Publication");
+    printf("\n\n-----------------------------------------\n");
     do
     {
-        printf("|To choose a sorting method, enter \"TITLE\", \"PRICE\", or \"DATE\"|\n");
+        printf("\nChoose a sorting method\n"
+               "Enter \"TITLE\", \"PRICE\", or \"DATE\"\n");
         scanf("%s", sortMethod);
+        printf("\n");
         if (!strcasecmp(title, sortMethod))
         {
             sortByTitle();
@@ -394,83 +468,84 @@ void printAll()
             printf("Enter a valid method!\n");
     }
     while (!flag);
-    printf("-----------------------------------------\n");
-    for (i = 0; i < infoSize; i++)
-    {
-        printBook(i);
-        printf("-----------------------------------------\n");
-    }
+
+    system("cls");
+    printTable();
 
 }
 
 void addBook()
 {
-    string isbn, inputQuantity, inputprice;
-    int index = 0, isValid = 0, inputmonth, inputyear;
+    string isbn, inputQuantity, inputprice, inputmonth, inputyear;
+    int index = 0, isValid = 0;
     char option;
-    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
+    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
     do
     {
         fflush(stdin);
         gets(isbn);
         isValid = isValidISBN(isbn);
-        if(!isValid)
-            printf("\nISBN is InValid!\nplease enter a valid one (ISBN must be 13 digits - All numbers): ");
-        else if(isValid)
-        {
 
-            index = searchByISBN(isbn);
-            if(index != -1)
+        index = searchByISBN(isbn);
+
+        if(index != -1)
+        {
+            printf("\nThis Book already exists!\n");
+            printf("Enter \"n\" to enter new ISBN\n"
+                   "Enter \"m\" to choose other option\n");
+            do
             {
-                printf("\nThis Book is already exists!");
-                printf("\nEnter 'a' to enter new ISBN\nenter 'b' to go back to menu");
                 fflush(stdin);
-                printf("\n\nEnter the letter : ");
+                printf("\nEnter \"n\" or \"m\" : \n");
                 scanf("%c", &option);
                 option = tolower(option);
-                if(option == 'a')
-                    printf("\nEnter another ISBN :");
-                else if(option == 'b')
+                if(option == 'n')
+                    printf("Enter another ISBN : \n");
+                else if(option == 'm')
                     return;
+                else
+                    printf("Invalid input!\nEnter 'n' to enter new ISBN\n"
+                           "Enter 'm' to choose other option\n");
             }
+            while (option != 'n' && option != 'm');
         }
     }
     while(!isValid || index  != -1);
-    strcpy(info[infoSize].ISBN,isbn);
+    strcpy(info[infoSize].ISBN, isbn);
 
-    printf("\nEnter the Title :");
+    printf("\nEnter the Title : ");
     fflush(stdin);
     gets(info[infoSize].title);
 
-    printf("\nEnter the Author Name :");
+    printf("\nEnter the Author Name : ");
     gets(info[infoSize].author);
 
-    printf("\nEnter the Qauntity : ");
+    printf("\nEnter the Quantity(whole number ex. 4): ");
     scanf("%s", inputQuantity);
-    info[infoSize].quantity=isValidQuantity(inputQuantity);
+    info[infoSize].quantity = isValidQuantity(inputQuantity);
 
-    printf("\nEnter the price:");
+    printf("\nEnter the price(decimal number ex. 2.15): ");
     scanf("%s", inputprice);
     info[infoSize].price = isValidPrice(inputprice);
 
-    printf("\nEnter the Publication Date Month: ");
-    scanf("%d",&inputmonth);
-    info[infoSize].publication.month=isValidMonth(inputmonth);
+    printf("\nEnter the Publication Date Month(whole number 1 to 12): ");
+    scanf("%s",inputmonth);
+    info[infoSize].publication.month = isValidMonth(inputmonth);
 
-    printf("\nEnter the Publication Date Year: ");
-    scanf("%d",&inputyear);
-    info[infoSize].publication.year=isValidYear(inputyear);
+    printf("\nEnter the Publication Date Year(whole number 0 to 2022): ");
+    scanf("%s",inputyear);
+    info[infoSize].publication.year = isValidYear(inputyear);
 
-    printf("\nThe new book had been added successfully.");
+    printf("\nThe new book had been added successfully. :)\n");
     printBook(infoSize);
     infoSize++;
 }
 
 void modify()
 {
-    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice;
-    int i, index = 0, isValid = 0, inputmonth, inputyear;
-    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
+    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice, inputmonth, inputyear;
+    int index = 0, isValid = 0;
+    printf("\nEnter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
@@ -486,116 +561,131 @@ void modify()
         }
     }
     while (!isValid || index == -1);
-    printf("Would you like to change the title from %s?\n", info[index].title);
+    printf("\nWould you like to change the title from %s?\n", info[index].title);
     do
     {
-        printf("Enter (YES or NO):\n");
+        printf("Enter (YES or NO) : ");
         scanf("%s", answer);
     }
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("Enter New Title: ");
+        printf("\nEnter New Title: ");
         fflush(stdin);
         gets(inputTitle);
         strcpy(info[index].title, inputTitle);
     }
     else if (!strcasecmp(answer, no))
     {
-        printf("Title will remain as %s.\n", info[index].title);
+        printf("\nTitle will remain as %s.\n\n", info[index].title);
     }
-    printf("Would you like to change the author's name from %s?\n", info[index].author);
+    printf("\nWould you like to change the author's name from %s?\n", info[index].author);
     do
     {
-        printf("Enter (YES or NO):\n");
+        printf("Enter (YES or NO) : ");
         scanf("%s", answer);
     }
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("Enter New Author's name: ");
+        printf("\nEnter New Author's name: ");
         fflush(stdin);
         gets(inputAuthor);
         strcpy(info[index].author, inputAuthor);
     }
     else if (!strcasecmp(answer, no))
     {
-        printf("Author's name will remain as %s.\n", info[index].author);
+        printf("\nAuthor's name will remain as %s.\n\n", info[index].author);
     }
-    printf("Would you like to change the quantity available from %d?\n", info[index].quantity);
+    printf("\nWould you like to change the quantity available from %d?\n", info[index].quantity);
     do
     {
-        printf("Enter (YES or NO):\n");
+        printf("Enter (YES or NO) : ");
         scanf("%s", answer);
     }
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("Enter New Quantity: ");
+        printf("\nEnter New Quantity(whole number ex. 4): ");
         scanf("%s", inputQuantity);
         info[index].quantity = isValidQuantity(inputQuantity);
     }
     else if (!strcasecmp(answer, no))
     {
-        printf("Quantity will remain as %d.\n", info[index].quantity);
+        printf("\nQuantity will remain as %d.\n\n", info[index].quantity);
     }
-    printf("Would you like to change the price from $%.2f?\n", info[index].price);
+    printf("\nWould you like to change the price from $%.2f?\n", info[index].price);
     do
     {
-        printf("Enter (YES or NO):\n");
+        printf("Enter (YES or NO) : ");
         scanf("%s", answer);
     }
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("Enter New Price: ");
+        printf("Enter New Price(decimal number ex. 2.15): ");
         scanf("%s", inputprice);
         info[index].price = isValidPrice(inputprice);
     }
     else if (!strcasecmp(answer, no))
     {
-        printf("Price will remain as $%.2f.\n", info[index].price);
+        printf("\nPrice will remain as $%.2f.\n\n", info[index].price);
     }
-    printf("Would you like to change the date published from %d-%d\n", info[index].publication.month, info[index].publication.year);
+    printf("\nWould you like to change the date published from %d-%d\n", info[index].publication.month, info[index].publication.year);
     do
     {
-        printf("Enter (YES or NO):\n");
+        printf("Enter (YES or NO) : ");
         scanf("%s", answer);
     }
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes)) // MUST VALIDATE
     {
-        printf("Enter New Publication Date Month: ");
-        scanf("%d", &inputmonth);
+        printf("\nEnter New Publication Date Month: ");
+        scanf("%s", inputmonth);
         info[index].publication.month = isValidMonth(inputmonth);
         printf("Enter New Publication Date Year: ");
-        scanf("%d", &inputyear);
+        scanf("%s", inputyear);
         info[index].publication.year = isValidYear(inputyear);
     }
     else if (!strcasecmp(answer, no))
     {
-        printf("Publication Date will remain as %d-%d.\n", info[index].publication.month, info[index].publication.year);
+        printf("\nPublication Date will remain as %d-%d.\n\n", info[index].publication.month, info[index].publication.year);
     }
 }
 
 void deleteBook ()
 {
     string isbn;
-    int i, index = 0, valid = 0;
+    int index = 0, valid = 0;
+    char option;
     Book temp;
 
-    printf("Enter ISBN of book to delete(ISBN must be 13 digits - All numbers): ");
+    printf("\nEnter ISBN of book to delete(ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
         gets(isbn);
-        if (valid = isValidISBN(isbn))
+        valid = isValidISBN(isbn);
+
+        if (valid)
         {
             index = searchByISBN(isbn);
             if (index == -1)
             {
-                printf("This ISBN is not found. Enter another one: ");
+                printf("This ISBN is not found!\n");
+                printf("\nEnter 'd' to enter another ISBN\n"
+                       "Enter 'm' to go back to menu");
+
+                fflush(stdin);
+                printf("\n\nEnter the letter : ");
+                scanf("%c", &option);
+                option = tolower(option);
+                if(option == 'd')
+                    printf("\nEnter another ISBN :");
+                else if(option == 'm')
+                    return;
             }
+
         }
     }
     while (!valid || index == -1);
@@ -604,6 +694,8 @@ void deleteBook ()
     info[index] = info[infoSize - 1];
     info[infoSize - 1] = temp;
     --infoSize;
+    printf("\nBooks information after deletion:\n\n");
+    printTable();
 }
 
 void save()
@@ -635,8 +727,9 @@ void save()
 
 void quit()
 {
+    system("cls");
     char option;
-    printf("\n\nAre you sure you want to exit the program ? (y/n) ");
+    printf("\aAre you sure you want to exit the program ? (y/n) ");
     fflush(stdin);
     scanf("%c", &option);
     option = tolower(option);
@@ -650,41 +743,27 @@ void quit()
 
         if(option == 'y')
             save();
-        else
-            exit(0);
+
+        exit(0);
 
     }
     else
         return;
 }
 
-void menu(FILE * fileCredentials, FILE * fileBooks)
+void chooseOption()
 {
+    int i;
     char option;
-    readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
-    printf("Welcome To our Library System\n\n");
-
-    letter :
-
-        fflush(stdin);
-        printf("Please Enter letter 'l' to login or 'q' to quit : ");
-        scanf("%c", &option);
-        option = tolower(option);
-        if(option == 'l')
-            login(numofTrials, numOfLines(fileCredentials) / 2);
-        else if(option == 'q')
-            exit(0);
-        else
-            goto letter;
-    // if the program reach this point that mean the user logged in successfully
-    load(fileBooks); // calls function to store books.txt data into the global array "info"
-
-selectOption :
-
     system("cls");
-    printf("You can choose one of our options by :\n");
-    printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo QUIT enter 'q'\n");
-
+    printf("You can choose one of our options by :\n\n");
+    printf("### To\tADD             enter 'a'\n"
+           "### To\tDELETE          enter 'd'\n"
+           "### To\tMODIFY          enter 'm'\n"
+           "### To\tSEARCH          enter 's'\n"
+           "### To\tADVANCED SEARCH enter 'v'\n"
+           "### To\tPRINT           enter 'p'\n"
+           "### To\tQUIT            enter 'q'\n");
 
     fflush(stdin);
     printf("\n\nEnter the letter : ");
@@ -712,49 +791,65 @@ selectOption :
         quit();
 
     else
-        printf("Wrong value\n");
+    {
+        printf("\nIncorrect Input!\n");
+        printf("Try again in:\n");
+        for (i = resetTimer; i != 0; i--)
+            {
+                printf("%d\n", i);
+                sleep(1);
+            }
+        chooseOption();
+    }
+}
 
+void menu(FILE * fileCredentials, FILE * fileBooks)
+{
+    char option;
+    readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
+    printf("=======================================\n\n");
+    printf("Welcome To our Library System :)");
+    printf("\n\n=======================================\n\n");
 
     while(1)
     {
-        printf("\n\nDo you want to select more options (y,n) ? ");
         fflush(stdin);
+        printf("Please Enter letter 'l' to login or 'q' to quit : ");
         scanf("%c", &option);
         option = tolower(option);
-        if (option == 'y')
+        if(option == 'l')
         {
-            system("cls");
-            goto selectOption;
+            login(numofTrials, numOfLines(fileCredentials) / 2);
+            break;
         }
 
-        else if(option == 'n')
-        {
-            while(1)
+        else if(option == 'q')
             {
-                system("cls");
-                printf("Do you want to save your EDITS (y,n) ? ");
-                fflush(stdin);
-                scanf("%c", &option);
-                option = tolower(option);
-
-                if (option == 'y')
-                {
-                    save();
-                    return;
-                }
-
-                else if (option == 'n')
-                {
-                    quit();
-                    return;
-                }
+                printf("\nGoodbye, have a nice day! :D\n");
+                exit(0);
             }
-
-        }
         else
             continue;
     }
 
+    // if the program reach this point that mean the user logged in successfully
+    load(fileBooks); // calls function to store books.txt data into the global array "info"
+
+    while(1)
+    {
+        chooseOption();
+
+        printf("\nDo you want to select another option (y,n) ? ");
+        fflush(stdin);
+        scanf("%c", &option);
+        option = tolower(option);
+        if (option == 'y')
+            continue;
+        else if(option == 'n')
+            quit();
+        else
+            continue;
+    }
 }
 
 int main()
