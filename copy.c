@@ -196,7 +196,7 @@ float isValidPrice(string price)
         {
             count++;
             if (price[i] == '.')
-                    ++pointcounter;
+                ++pointcounter;
 
             if (!isdigit(price[i]) && price[i] != '.' || pointcounter > 1)
             {
@@ -663,29 +663,9 @@ void quit()
         return;
 }
 
-void menu(FILE * fileCredentials, FILE * fileBooks)
+void chooseOption()
 {
     char option;
-    readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
-    printf("Welcome To our Library System\n\n");
-
-    /*letter :
-
-        fflush(stdin);
-        printf("Please Enter letter 'l' to login or 'q' to quit : ");
-        scanf("%c", &option);
-        option = tolower(option);
-        if(option == 'l')
-            login(numofTrials, numOfLines(fileCredentials) / 2);
-        else if(option == 'q')
-            exit(0);
-        else
-            goto letter;*/
-    // if the program reach this point that mean the user logged in successfully
-    load(fileBooks); // calls function to store books.txt data into the global array "info"
-
-selectOption :
-
     system("cls");
     printf("You can choose one of our options by :\n");
     printf("To ADD enter 'a'\nTo DELETE enter 'd'\nTo MODIFY enter 'm'\nTo SEARCH enter 's'\nTo ADVANCED SEARCH enter 'v'\nTo PRINT enter 'p'\nTo QUIT enter 'q'\n");
@@ -718,20 +698,45 @@ selectOption :
 
     else
         printf("Wrong value\n");
+}
 
+void menu(FILE * fileCredentials, FILE * fileBooks)
+{
+    char option;
+    readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
+    printf("Welcome To our Library System\n\n");
+
+    /*while(1)
+    {
+        fflush(stdin);
+        printf("Please Enter letter 'l' to login or 'q' to quit : ");
+        scanf("%c", &option);
+        option = tolower(option);
+        if(option == 'l')
+        {
+            login(numofTrials, numOfLines(fileCredentials) / 2);
+            break;
+        }
+
+        else if(option == 'q')
+            exit(0);
+        else
+            continue;
+    }*/
+
+    // if the program reach this point that mean the user logged in successfully
+    load(fileBooks); // calls function to store books.txt data into the global array "info"
 
     while(1)
     {
+        chooseOption();
+
         printf("\n\nDo you want to select more options (y,n) ? ");
         fflush(stdin);
         scanf("%c", &option);
         option = tolower(option);
         if (option == 'y')
-        {
-            system("cls");
-            goto selectOption;
-        }
-
+            continue;
         else if(option == 'n')
         {
             while(1)
@@ -745,7 +750,7 @@ selectOption :
                 if (option == 'y')
                 {
                     save();
-                    return;
+                    exit(0);
                 }
 
                 else if (option == 'n')
@@ -759,7 +764,6 @@ selectOption :
         else
             continue;
     }
-
 }
 
 int main()
