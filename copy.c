@@ -152,35 +152,60 @@ int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
 
 int isValidMonth (string OLDmonth)
 {
-    int month = isValidQuantity(OLDmonth);
-
-    while (month > 12 || month < 1)
+    int i, valid, count, validmonth;
+    do
     {
-        if (month > 12 || month < 1)
+        valid = 0;
+        i = 0;
+        count = 0;
+        while (OLDmonth[i] != '\0')
         {
-            printf("Enter a valid month(1 to 12): ");
-
-            scanf("%d", &month);
-            printf("\n");
+            count++;
+            if (!isdigit(OLDmonth[i]))
+            {
+                valid = 0;
+                printf("Enter a valid month (whole number from 1 to 12): ");
+                scanf("%s", OLDmonth);
+                break;
+            }
+            else
+                valid = 1;
+            i++;
         }
+        if (valid)
+            validmonth = atoi(OLDmonth);
     }
-    return month;
+    while (!valid || !count);
+    return validmonth;
 }
 
 int isValidYear (string OLDyear)
 {
-    int year = isValidQuantity(OLDyear);
-
-    while (year > 2022 || year < 0)
+    int i, valid, count, validyear;
+    do
     {
-        if (year > 2022 || year < 0)
+        valid = 0;
+        i = 0;
+        count = 0;
+        while (OLDyear[i] != '\0')
         {
-            printf("Enter a valid year(0 to 2022): ");
-            scanf("%d", &year);
-            printf("\n");
+            count++;
+            if (!isdigit(OLDyear[i]) || validyear > 2022 || validyear < 0)
+            {
+                valid = 0;
+                printf("Enter a valid year (whole number 0 to 2022): ");
+                scanf("%s", OLDyear);
+                break;
+            }
+            else
+                valid = 1;
+            i++;
         }
+        if (valid)
+            validyear = atoi(OLDyear);
     }
-    return year;
+    while (!valid || !count);
+    return validyear;
 }
 
 float isValidPrice(string price)
@@ -202,7 +227,7 @@ float isValidPrice(string price)
             if (!isdigit(price[i]) && price[i] != '.' || pointcounter > 1)
             {
                 valid = 0;
-                printf("Enter a valid price (whole or decimal number): ");
+                printf("Enter a valid price (whole or decimal number ex. 2.15): ");
                 scanf("%s", price);
                 break;
             }
@@ -232,7 +257,7 @@ int isValidQuantity (string quantity)
             if (!isdigit(quantity[i]))
             {
                 valid = 0;
-                printf("Enter a valid quantity (number greater than or equal to 0): ");
+                printf("Enter a valid quantity (whole number greater than or equal to 0 ex. 4): ");
                 scanf("%s", quantity);
                 break;
             }
@@ -460,19 +485,19 @@ void addBook()
     printf("\nEnter the Author Name : ");
     gets(info[infoSize].author);
 
-    printf("\nEnter the Quantity : ");
+    printf("\nEnter the Quantity(whole number ex. 4): ");
     scanf("%s", inputQuantity);
     info[infoSize].quantity = isValidQuantity(inputQuantity);
 
-    printf("\nEnter the price : ");
+    printf("\nEnter the price(decimal number ex. 2.15): ");
     scanf("%s", inputprice);
     info[infoSize].price = isValidPrice(inputprice);
 
-    printf("\nEnter the Publication Date Month : ");
+    printf("\nEnter the Publication Date Month(whole number 1 to 12): ");
     scanf("%s",inputmonth);
     info[infoSize].publication.month = isValidMonth(inputmonth);
 
-    printf("\nEnter the Publication Date Year : ");
+    printf("\nEnter the Publication Date Year(whole number 0 to 2022): ");
     scanf("%s",inputyear);
     info[infoSize].publication.year = isValidYear(inputyear);
 
@@ -546,7 +571,7 @@ void modify()
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("\nEnter New Quantity: ");
+        printf("\nEnter New Quantity(whole number ex. 4): ");
         scanf("%s", inputQuantity);
         info[index].quantity = isValidQuantity(inputQuantity);
     }
@@ -563,7 +588,7 @@ void modify()
     while (strcasecmp(answer, no) && strcasecmp(answer, yes));
     if (!strcasecmp(answer, yes))
     {
-        printf("Enter New Price: ");
+        printf("Enter New Price(decimal number ex. 2.15): ");
         scanf("%s", inputprice);
         info[index].price = isValidPrice(inputprice);
     }
