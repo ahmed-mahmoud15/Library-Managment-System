@@ -188,18 +188,33 @@ float isValidPrice (float price)
     return price;
 }
 
-int isValidQuantity (int quantity)
+int isValidQuantity (string quantity)
 {
+    int i, valid, count, validquantity;
     do
     {
-        if (quantity < 0)
+        valid = 0;
+        i = 0;
+        count = 0;
+        while (quantity[i] != '\0')
         {
-            printf("Enter a valid quantity (0 or more): ");
-            scanf("%d", &quantity);
+            count++;
+            if (!isdigit(quantity[i]))
+            {
+                valid = 0;
+                printf("Enter a valid quantity (number greater than or equal to 0): ");
+                scanf("%s", quantity);
+                break;
+            }
+            else
+                valid = 1;
+            i++;
         }
+        if (valid)
+            validquantity = atoi(quantity);
     }
-    while (quantity < 0);
-    return quantity;
+    while (!valid || !count);
+    return validquantity;
 }
 
 int searchByISBN(string isbn)
@@ -363,13 +378,14 @@ void printAll()
     }
 
 }
+
 void addBook()
 {
-    string isbn;
-    int i, index = 0, isValid = 0, inputmonth, inputyear, inputQuantity;
+    string isbn, inputQuantity;
+    int i, index = 0, isValid = 0, inputmonth, inputyear;
     float inputprice;
     char option;
-    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
+    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
@@ -407,7 +423,7 @@ void addBook()
     gets(info[infoSize].author);
 
     printf("\nEnter the Qauntity : ");
-    scanf("%d",&inputQuantity);
+    scanf("%s", inputQuantity);
     info[infoSize].quantity=isValidQuantity(inputQuantity);
 
     printf("\nEnter the price:");
@@ -423,13 +439,14 @@ void addBook()
     info[infoSize].publication.year=isValidYear(inputyear);
 
     printf("\nThe new book had been added successfully.");
-    printBook(infoSize);
+    printBook(i);
     infoSize++;
 }
+
 void modify()
 {
-    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor;
-    int i, index = 0, isValid = 0, inputmonth, inputyear, inputQuantity;
+    string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity;
+    int i, index = 0, isValid = 0, inputmonth, inputyear;
     float inputprice;
     printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
@@ -493,7 +510,7 @@ void modify()
     if (!strcasecmp(answer, yes))
     {
         printf("Enter New Quantity: ");
-        scanf("%d", &inputQuantity);
+        scanf("%s", inputQuantity);
         info[index].quantity = isValidQuantity(inputQuantity);
     }
     else if (!strcasecmp(answer, no))
@@ -740,3 +757,4 @@ int main()
 
     return 0;
 }
+
