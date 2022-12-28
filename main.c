@@ -382,10 +382,10 @@ void printAll()
 void addBook()
 {
     string isbn, inputQuantity;
-    int i, index = 0, isValid = 0, inputmonth, inputyear;
+    int  index = 0, isValid = 0, inputmonth, inputyear;
     float inputprice;
     char option;
-    printf("Enter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
+    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers): ");
     do
     {
         fflush(stdin);
@@ -439,7 +439,7 @@ void addBook()
     info[infoSize].publication.year=isValidYear(inputyear);
 
     printf("\nThe new book had been added successfully.");
-    printBook(i);
+    printBook(infoSize);
     infoSize++;
 }
 
