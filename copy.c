@@ -640,8 +640,9 @@ void save()
 
 void quit()
 {
+    system("cls");
     char option;
-    printf("\n\nAre you sure you want to exit the program ? (y/n) ");
+    printf("Are you sure you want to exit the program ? (y/n) ");
     fflush(stdin);
     scanf("%c", &option);
     option = tolower(option);
@@ -655,8 +656,8 @@ void quit()
 
         if(option == 'y')
             save();
-        else
-            exit(0);
+
+        exit(0);
 
     }
     else
@@ -738,29 +739,7 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         if (option == 'y')
             continue;
         else if(option == 'n')
-        {
-            while(1)
-            {
-                system("cls");
-                printf("Do you want to save your EDITS (y,n) ? ");
-                fflush(stdin);
-                scanf("%c", &option);
-                option = tolower(option);
-
-                if (option == 'y')
-                {
-                    save();
-                    exit(0);
-                }
-
-                else if (option == 'n')
-                {
-                    quit();
-                    return;
-                }
-            }
-
-        }
+            quit();
         else
             continue;
     }
