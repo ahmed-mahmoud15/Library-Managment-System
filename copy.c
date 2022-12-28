@@ -115,7 +115,7 @@ void printDate(Date date)
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-    printf("Published: %s %d\n\n", months[date.month - 1], date.year);
+    printf("%s %d", months[date.month - 1], date.year);
 }
 
 void printBook (int i)
@@ -125,7 +125,9 @@ void printBook (int i)
     printf("Author: %s\n", info[i].author);
     printf("Quantity: %d\n", info[i].quantity);
     printf("Price: $%.2f\n", info[i].price);
+    printf("Published: ");
     printDate(info[i].publication);
+    printf("\n\n");
 }
 
 int isValidISBN (string isbn) // returns 1 if valid 0 if invalid
@@ -286,7 +288,7 @@ int isValidQuantity (string quantity)
 
 int searchByISBN(string isbn)
 {
-    int i, flag = 0;
+    int i;
     for(i = 0; i < infoSize; i++)
     {
         if (strcmp(isbn, info[i].ISBN) == 0)
@@ -300,8 +302,14 @@ int searchByISBN(string isbn)
 void query ()
 {
     string isbn;
-    printf("Enter a book ISBN: ");
-    scanf("%s", isbn);
+    int isValid = 0;
+    printf("Enter a valid book ISBN: ");
+    do
+    {
+        scanf("%s", isbn);
+        isValid = isValidISBN(isbn);
+    }
+    while(!isValid);
     int index = searchByISBN(isbn);
     if (index > -1)
     {
@@ -406,6 +414,25 @@ void sortByPrice () // function that sorts global info array by price from cheap
     }
 }
 
+void printTable()
+{
+    int i;
+    printf("  # | %-13s | %-50s | %-30s | %-6s | %-8s | %s \n", "ISBN", "Title", "Author Name", "Price", "Quantity", "Publication Date");
+    for (i = 0; i < 150; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
+    for (i= 0; i < infoSize; i++)
+    {
+        string price, quantity;
+        snprintf(quantity, 8, "%d", info[i].quantity);
+        snprintf(price, 6, "%.2f", info[i].price);
+        printf(" %02d | %-13s | %-50s | %-30s | %-6s | %-8s | ", i+1, info[i].ISBN, info[i].title, info[i].author, price, quantity);
+        printDate(info[i].publication);
+        printf("\n");
+    }
+}
 void printAll()
 {
     int i, flag = 0;
@@ -441,12 +468,7 @@ void printAll()
     while (!flag);
 
     system("cls");
-    printf("-----------------------------------------\n");
-    for (i = 0; i < infoSize; i++)
-    {
-        printBook(i);
-        printf("-----------------------------------------\n");
-    }
+    printTable();
 
 }
 
@@ -468,21 +490,20 @@ void addBook()
         {
             printf("\nThis Book already exists!\n");
             printf("Enter \"n\" to enter new ISBN\n"
-                   "Enter \"m\" to go back to menu\n");
+                   "Enter \"m\" to choose other option\n");
             do
             {
                 fflush(stdin);
                 printf("\nEnter \"n\" or \"m\" : \n");
                 scanf("%c", &option);
                 option = tolower(option);
-                printf("%c\n", option);
                 if(option == 'n')
                     printf("Enter another ISBN : \n");
                 else if(option == 'm')
-                    chooseOption();
+                    return;
                 else
                     printf("Invalid input!\nEnter 'n' to enter new ISBN\n"
-                           "Enter 'm' to go back to menu\n");
+                           "Enter 'm' to choose other option\n");
             }
             while (option != 'n' && option != 'm');
         }
@@ -671,6 +692,8 @@ void deleteBook ()
     info[index] = info[infoSize - 1];
     info[infoSize - 1] = temp;
     --infoSize;
+    printf("\nBooks information after deletion:\n\n");
+    printTable();
 }
 
 void save()
