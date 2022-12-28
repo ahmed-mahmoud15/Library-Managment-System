@@ -174,8 +174,14 @@ int isValidMonth (string OLDmonth)
         }
         if (valid)
             validmonth = atoi(OLDmonth);
+
+        if (validmonth > 12 || validmonth < 1)
+        {
+            printf("Enter a valid month (whole number from 1 to 12): ");
+            scanf("%s", OLDmonth);
+        }
     }
-    while (!valid || !count);
+    while (!valid || !count || validmonth > 12 || validmonth < 1);
     return validmonth;
 }
 
@@ -190,7 +196,7 @@ int isValidYear (string OLDyear)
         while (OLDyear[i] != '\0')
         {
             count++;
-            if (!isdigit(OLDyear[i]) || validyear > 2022 || validyear < 0)
+            if (!isdigit(OLDyear[i]))
             {
                 valid = 0;
                 printf("Enter a valid year (whole number 0 to 2022): ");
@@ -203,8 +209,14 @@ int isValidYear (string OLDyear)
         }
         if (valid)
             validyear = atoi(OLDyear);
+
+        if (validyear > 2022 || validyear < 0)
+        {
+            printf("Enter a valid year (whole number 0 to 2022): ");
+            scanf("%s", OLDyear);
+        }
     }
-    while (!valid || !count);
+    while (!valid || !count || validyear > 2022 || validyear < 0);
     return validyear;
 }
 
@@ -753,10 +765,10 @@ void chooseOption()
         quit();
 
     else
-        {
-            printf("Wrong value\n");
-            chooseOption();
-        }
+    {
+        printf("Wrong value\n");
+        chooseOption();
+    }
 }
 
 void menu(FILE * fileCredentials, FILE * fileBooks)
