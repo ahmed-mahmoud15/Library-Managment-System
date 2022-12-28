@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
 #define MAX 256
 #define numofTrials 5
+#define resetTimer 3
 
 typedef char string[MAX]; // defines a new data type "string" as a character array with "MAX" number of elements
 
@@ -238,7 +240,7 @@ float isValidPrice(string price)
             if (price[i] == '.')
                 ++pointcounter;
 
-            if (!isdigit(price[i]) && price[i] != '.' || pointcounter > 1)
+            if ((!isdigit(price[i]) && price[i] != '.') || pointcounter > 1)
             {
                 valid = 0;
                 printf("Enter a valid price (whole or decimal number ex. 2.15): ");
@@ -435,7 +437,7 @@ void printTable()
 }
 void printAll()
 {
-    int i, flag = 0;
+    int flag = 0;
     string sortMethod;
     string title = "title", price = "price", date = "date";
     printf("-----------------------------------------\n\n");
@@ -542,7 +544,7 @@ void addBook()
 void modify()
 {
     string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice, inputmonth, inputyear;
-    int i, index = 0, isValid = 0;
+    int index = 0, isValid = 0;
     printf("\nEnter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
@@ -654,7 +656,7 @@ void modify()
 void deleteBook ()
 {
     string isbn;
-    int i, index = 0, valid = 0;
+    int index = 0, valid = 0;
     char option;
     Book temp;
 
@@ -751,6 +753,7 @@ void quit()
 
 void chooseOption()
 {
+    int i;
     char option;
     system("cls");
     printf("You can choose one of our options by :\n\n");
@@ -789,7 +792,13 @@ void chooseOption()
 
     else
     {
-        printf("Wrong value\n");
+        printf("\nIncorrect Input!\n");
+        printf("Try again in:\n");
+        for (i = resetTimer; i != 0; i--)
+            {
+                printf("%d\n", i);
+                sleep(1);
+            }
         chooseOption();
     }
 }
