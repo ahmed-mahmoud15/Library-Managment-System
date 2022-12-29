@@ -13,7 +13,7 @@ typedef char string[MAX]; // defines a new data type "string" as a character arr
 
 typedef char shortString[MIN]; // defines a new data type "shortString" as a character array with "MIN" number of elements
 
-enum bool {false, true};  // defines an enumiration called bool 
+enum bool {false, true};  // defines an enumiration called bool
 
 typedef struct Date // struct that stores the date as an integer month and integer year
 {
@@ -146,16 +146,16 @@ int numOfLines(FILE *fileCredentials) // function that counts the number of line
 void readCredentials(FILE *fileCredentials, int n) // function that stores user name and password information into the Credentials struct
 {
     rewind(fileCredentials); // function repositions the file pointer to the beginning of the file
+    string temp;
     int i;
-    for(i =0 ; !feof(fileCredentials) ; i++) // for loop that moves through to load credentials array with username and password data from the credentials file
+    for(i =0 ; i < n ; i++) // for loop that moves through to load credentials array with username and password data from the credentials file
     {
-        fgets(Credentials[i].username, sizeof(Credentials[i].username), fileCredentials); //copies line from file into the username string of struct Account Credentials[i]
-        Credentials[i].username[strlen(Credentials[i].username)-1] = '\0'; // removes \n that fgets puts at the end of the string
+        fgets(temp, MIN, fileCredentials); //copies line from file into the username string of struct Account Credentials[i]
+        strcpy(Credentials[i].username, strtok(temp, "\n"));
 
-        fgets(Credentials[i].password, sizeof(Credentials[i].password), fileCredentials); //copies line from file into the password string of struct Account Credentials[i]
-        Credentials[i].password[strlen(Credentials[i].password)-1] = '\0'; // removes \n that fgets puts at the end of the string
+        fgets(temp, MIN, fileCredentials); //copies line from file into the username string of struct Account Credentials[i]
+        strcpy(Credentials[i].password, strtok(temp, "\n"));
     }
-
 }
 
 int login(int trials, int n) // login function that prompts user to enter a username and password and returns 1 if the user inputs valid credentials
