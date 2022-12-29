@@ -398,7 +398,7 @@ int isStringEmpty(string name)
     {
         if(strlen(name) == 0)
         {
-            printf("Enter valid name : ");
+            printf("Enter a valid one : ");
             return 0;
         }
         else
@@ -424,6 +424,7 @@ void query ()
 {
     string isbn;
     int isValid = 0;
+    char option2;
     printf("Enter a valid book ISBN: ");
     do
     {
@@ -440,6 +441,24 @@ void query ()
     {
         printf("The ISBN entered is not available\n");
     }
+    printf("\ndo you want to search for another book (y,n)? :");
+     do
+    {
+        fflush(stdin);
+        scanf("%c", &option2);
+        option2 = tolower(option2);
+
+        if(option2 == 'y')
+        {
+            system("cls");
+            query();
+        }
+        else if(option2 == 'n')
+            return;
+        else
+            printf("Invalid input!\nenter 'y' or 'n' :");
+    }
+    while(option2 != 'y' && option2 != 'n');
 }
 
 void advancedSearch ()
@@ -597,8 +616,8 @@ void addBook()
 {
     string isbn, inputQuantity, inputprice, inputmonth, inputyear, title, author;
     int index = 0, isValid = 0;
-    char option;
-    printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
+    char option, option2;
+    printf("\nEnter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
     do
     {
         fflush(stdin);
@@ -673,12 +692,31 @@ void addBook()
     infoSize++;
     printf("\nBooks information after Addition : \n\n");
     printTable();
+    printf("\ndo you want to add another book (y,n)? :");
+    do
+    {
+        fflush(stdin);
+        scanf("%c", &option2);
+        option2 = tolower(option2);
+
+        if(option2 == 'y')
+        {
+            system("cls");
+            addBook();
+        }
+        else if(option2 == 'n')
+            return;
+        else
+            printf("Invalid input!\nenter 'y' or 'n' :");
+    }
+    while(option2 != 'y' && option2 != 'n');
 }
 
 void modify()
 {
     string isbn, yes = "yes", no = "no", answer, inputTitle, inputAuthor, inputQuantity, inputprice, inputmonth, inputyear;
     int index = 0, isValid = 0;
+    char option2;
     printf("\nEnter ISBN of book to modify (ISBN must be 13 digits - All numbers): ");
     do
     {
@@ -795,13 +833,31 @@ void modify()
     {
         printf("\nPublication Date will remain as %d-%d.\n\n", info[index].publication.month, info[index].publication.year);
     }
+    printf("\ndo you want to modify another book (y,n)? :");
+     do
+    {
+        fflush(stdin);
+        scanf("%c", &option2);
+        option2 = tolower(option2);
+
+        if(option2 == 'y')
+        {
+            system("cls");
+            modify();
+        }
+        else if(option2 == 'n')
+            return;
+        else
+            printf("Invalid input!\nenter 'y' or 'n' :");
+    }
+    while(option2 != 'y' && option2 != 'n');
 }
 
 void deleteBook ()
 {
     string isbn;
     int index = 0, valid = 0;
-    char option;
+    char option,option2;
     Book temp;
 
     printf("\nEnter ISBN of book to delete(ISBN must be 13 digits - All numbers): ");
@@ -840,6 +896,24 @@ void deleteBook ()
     --infoSize;
     printf("\nBooks information after Deletion : \n\n");
     printTable();
+    printf("\ndo you want to delete another book (y,n)? :");
+    do
+    {
+        fflush(stdin);
+        scanf("%c", &option2);
+        option2 = tolower(option2);
+
+        if(option2 == 'y')
+        {
+            system("cls");
+            deleteBook();
+        }
+        else if(option2 == 'n')
+            return;
+        else
+            printf("Invalid input!\nenter 'y' or 'n' :");
+    }
+    while(option2 != 'y' && option2 != 'n');
 }
 
 void save()
