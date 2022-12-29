@@ -164,7 +164,7 @@ int login(int trials, int n) // login function that prompts user to enter a user
         printf("Wait 10 seconds to try again\n");
         sleep(10);
 
-        printf("\nDo you want to login again -enter \'l\'- ? else quit :: ");
+        printf("\nEnter \"l\" to reattempt login, anything else to quit.");
         scanf("%c", &option);
         option = tolower(option);
 
@@ -224,14 +224,14 @@ void load(FILE * fileBooks) // load function that stores book.txt file data into
     }
 }
 
-void printDate(Date date)
+void printDate(Date publicationdate)
 {
     shortString months[12] =
     {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-    printf("%s %d", months[date.month - 1], date.year);
+    printf("%s %d", months[publicationdate.month - 1], publicationdate.year);
 }
 
 void printBook (int i)
@@ -264,7 +264,7 @@ int isValidISBN (shortString isbn) // returns 1 if valid 0 if invalid
     if (counter == 13 && !flag)
         return 1;
     else
-        printf("Enter valid ISBN: ");
+        printf("Enter valid ISBN (13 digits - numbers only): ");
     return 0;
 }
 
@@ -414,7 +414,7 @@ int isStringEmpty(string name)
     {
         if( strlen(name) == s )
         {
-            printf("Enter valid name : ");
+            printf("Enter valid name: ");
             return 0;
         }
         else
@@ -459,7 +459,7 @@ void query ()
         printf("The ISBN entered is not available\n");
     }
 
-    printf("\ndo you want to search for another book (y,n)? :");
+    printf("\nDo you want to search for another book (y,n)? :");
     do
     {
         fflush(stdin);
@@ -474,7 +474,7 @@ void query ()
         else if(option == 'n')
             return;
         else
-            printf("Invalid input!\nenter 'y' or 'n' :");
+            printf("Invalid input!\nEnter \"y\" or \"n\" :");
     }
     while(option != 'y' && option != 'n');
 
@@ -508,7 +508,7 @@ void advancedSearch ()
         printf("No matches are found\n");
     }
 
-    printf("\ndo you want to Search for another book (y,n)? :");
+    printf("\nDo you want to Search for another book (y,n)? :");
     do
     {
         fflush(stdin);
@@ -523,7 +523,7 @@ void advancedSearch ()
         else if(option == 'n')
             return;
         else
-            printf("Invalid input!\nenter 'y' or 'n' : ");
+            printf("Invalid input!\nEnter \"y\" or \"n\" :");
     }
     while(option != 'y' && option != 'n');
 
@@ -701,7 +701,7 @@ void addBook()
     while(!isValid || index  != -1);
     strcpy(info[infoSize].ISBN, isbn);
 
-    printf("\nEnter the Title : ");
+    printf("\nEnter Book Title : ");
     do
     {
         fflush(stdin);
@@ -711,7 +711,7 @@ void addBook()
     strcpy(info[infoSize].title, title);
 
 
-    printf("\nEnter the Author Name : ");
+    printf("\nEnter the Author's Name : ");
     do
     {
         fflush(stdin);
@@ -743,7 +743,7 @@ void addBook()
     printf("\nBooks information after Addition : \n\n");
     printTable();
 
-    printf("\ndo you want to add another book (y,n)? :");
+    printf("\nDo you want to add another book (y,n)? :");
     do
     {
         fflush(stdin);
@@ -758,7 +758,7 @@ void addBook()
         else if(option == 'n')
             return;
         else
-            printf("Invalid input!\nenter 'y' or 'n' : ");
+            printf("Invalid input!\nEnter 'y' or 'n' : ");
     }
     while(option != 'y' && option != 'n');
 
@@ -888,7 +888,7 @@ void modify()
         printf("\nPublication Date will remain as %d-%d.\n\n", info[index].publication.month, info[index].publication.year);
     }
 
-    printf("\ndo you want to Modify another book (y,n)? :");
+    printf("\nDo you want to Modify another book (y,n)? :");
     do
     {
         fflush(stdin);
@@ -903,7 +903,7 @@ void modify()
         else if(option == 'n')
             return;
         else
-            printf("Invalid input!\nenter 'y' or 'n' : ");
+            printf("Invalid input!\nEnter 'y' or 'n' : ");
     }
     while(option != 'y' && option != 'n');
 }
@@ -952,7 +952,7 @@ void deleteBook ()
     printf("\nBooks information after Deletion : \n\n");
     printTable();
 
-    printf("\ndo you want to Delete another book (y,n)? :");
+    printf("\nDo you want to Delete another book (y,n)? :");
     do
     {
         fflush(stdin);
@@ -967,7 +967,7 @@ void deleteBook ()
         else if(option == 'n')
             return;
         else
-            printf("Invalid input!\nenter 'y' or 'n' : ");
+            printf("Invalid input!\nEnter 'y' or 'n' : ");
     }
     while(option != 'y' && option != 'n');
 }
@@ -1032,15 +1032,15 @@ void chooseOption()
     int i;
     char option;
     system("cls");
-    printf("You can choose one of our options by :\n\n");
-    printf("### To\tADD             enter 'a'\n"
-           "### To\tDELETE          enter 'd'\n"
-           "### To\tMODIFY          enter 'm'\n"
-           "### To\tSEARCH          enter 's'\n"
-           "### To\tADVANCED SEARCH enter 'v'\n"
-           "### To\tPRINT           enter 'p'\n"
-           "### To\tSAVE            enter 'z'\n"
-           "### To\tQUIT            enter 'q'\n");
+    printf("You can choose an options by:\n\n");
+    printf("### Entering 'a'\tTo ADD\n"
+           "### Entering 'd'\tTo DELETE\n"
+           "### Entering 'm'\tTo MODIFY\n"
+           "### Entering 's'\tTo SEARCH\n"
+           "### Entering 'v'\tTo use ADVANCED SEARCH\n"
+           "### Entering 'p'\tTo PRINT\n"
+           "### Entering 'z'\tTo SAVE\n"
+           "### Entering 'q'\tTo QUIT\n");
 
     fflush(stdin);
     printf("\n\nEnter the letter : ");
