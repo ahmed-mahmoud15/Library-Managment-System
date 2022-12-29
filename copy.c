@@ -103,7 +103,7 @@ int main()
 
     if (fileCredentials == NULL)
     {
-        printf("Error while opening the file"); // Error message if credentials.txt file is not found
+        printf("Error while opening the file: \"credentials.txt\"!"); // Error message if credentials.txt file is not found
         return 1; // Ends program by returning 1 to show error
     }
 
@@ -111,8 +111,8 @@ int main()
 
     if (fileBooks == NULL)
     {
-        printf("Error while opening the books.txt file"); // Error message if books.txt file is not found
-        return 1; // Ends program by returning 1 to show error
+        printf("Error while opening the file: \"books.txt\"!"); // Error message if books.txt file is not found
+        return 2; // Ends program by returning 2 to show error
     }
 
 
@@ -282,6 +282,7 @@ int isValidMonth (shortString OLDmonth)
             if (!isdigit(OLDmonth[i]))
             {
                 valid = 0;
+                fflush(stdin);
                 printf("Enter a valid month (whole number from 1 to 12): ");
                 scanf("%s", OLDmonth);
                 break;
@@ -317,6 +318,7 @@ int isValidYear (shortString OLDyear)
             if (!isdigit(OLDyear[i]))
             {
                 valid = 0;
+                fflush(stdin);
                 printf("Enter a valid year (whole number 0 to 2022): ");
                 scanf("%s", OLDyear);
                 break;
