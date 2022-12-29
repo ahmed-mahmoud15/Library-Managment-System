@@ -54,6 +54,8 @@ void printDate(Date date);
 
 void printBook (int i);
 
+int isValidLetter(shortString temp);
+
 int isValidISBN (shortString isbn); // returns 1 if valid 0 if invalid
 
 int isValidMonth (shortString OLDmonth);
@@ -245,6 +247,18 @@ void printBook (int i)
     printDate(info[i].publication);
     printf("\n\n");
 }
+
+int isValidLetter(shortString temp)
+{
+    if(strlen(temp) == 1)
+        return 1;
+    else
+    {
+        printf("Enter one letter : ");
+        return 0;
+    }
+}
+
 
 int isValidISBN (shortString isbn) // returns 1 if valid 0 if invalid
 {
