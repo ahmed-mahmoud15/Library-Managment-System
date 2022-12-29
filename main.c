@@ -60,6 +60,8 @@ float isValidPrice(string price);
 
 int isValidQuantity (string quantity);
 
+int isStringEmpty(string name);
+
 int searchByISBN(string isbn);
 
 void query ();
@@ -150,11 +152,24 @@ void readCredentials(FILE *fileCredentials, int n) // function that stores user 
 
 int login(int trials, int n) // login function that prompts user to enter a username and password and returns 1 if the user inputs valid credentials
 {
-    int i;
+    int i,j;
+    char option;
+
     if (trials == 0) // condition that checks whether the user used up the limited number of trials
     {
-        printf("Try again later.");
-        exit(0);
+        printf("Wait 10 seconds to try again\n");
+        sleep(10);
+
+        printf("\nDo you want to login again -enter \'l\'- ? else quit :: ");
+        scanf("%c", &option);
+        option = tolower(option);
+
+        if(option == 'l')
+            return 0;
+
+        else
+            exit(0);
+
     }
     string user, pass;
 
@@ -168,8 +183,18 @@ int login(int trials, int n) // login function that prompts user to enter a user
 
     for(i =0; i < n; i++) // for loop that passes through the Credentials array
         if (strcmp(Credentials[i].username, user) == 0 && strcmp(Credentials[i].password, pass) == 0) // BASE CASE - condition to check if the user inputted username and password match with any username and password from credentials array
-            return 1; // leaves function by returning 1 and skips the remaining lines of the function without executing
+        {
+            printf("\n\nWelcome %s :D\n", Credentials[i].username);
+            printf("Your login is processing");
 
+            for(j = resetTimer; j != 0 ; j--)
+            {
+                printf(".");
+                sleep(1);
+            }
+
+            return 1; // leaves function by returning 1 and skips the remaining lines of the function without executing
+        }
     printf("Invalid username or password\nYou have %d more trials\n\n\n", trials-1); //prints error message informing the user of how many tries they have left before the program closes
     return login(--trials, n); // RECURSIVE CASE - in case of incorrect credentials, reduces number of tries remaining by 1 before function calls itself again
 
@@ -373,6 +398,25 @@ int isValidQuantity (string quantity)
     return validquantity;
 }
 
+int isStringEmpty(string name)
+{
+    int s;
+
+    for(s = 0; isspace(name[s]) ; s++);
+
+        while(1)
+        {
+            if( strlen(name) == s )
+            {
+                printf("Enter valid name : ");
+                return 0;
+            }
+            else
+                return  1;
+        }
+
+}
+
 int searchByISBN(string isbn)
 {
     int i;
@@ -561,7 +605,7 @@ void printAll()
 
 void addBook()
 {
-    string isbn, inputQuantity, inputprice, inputmonth, inputyear;
+    string isbn, inputQuantity, inputprice, inputmonth, inputyear, title, author;
     int index = 0, isValid = 0;
     char option;
     printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
@@ -577,7 +621,7 @@ void addBook()
         {
             printf("\nThis Book already exists!\n");
             printf("Enter \"n\" to enter new ISBN\n"
-                   "Enter \"m\" to choose other option\n");
+                   "Enter \"m\" to choose other option");
             do
             {
                 fflush(stdin);
@@ -599,11 +643,24 @@ void addBook()
     strcpy(info[infoSize].ISBN, isbn);
 
     printf("\nEnter the Title : ");
-    fflush(stdin);
-    gets(info[infoSize].title);
+    do
+    {
+        fflush(stdin);
+        gets(title);
+    }
+    while(isStringEmpty(title) == 0);
+    strcpy(info[infoSize].title, title);
+
 
     printf("\nEnter the Author Name : ");
-    gets(info[infoSize].author);
+    do
+    {
+        fflush(stdin);
+        gets(author);
+    }
+    while(isStringEmpty(author) == 0);
+    strcpy(info[infoSize].author, author);
+
 
     printf("\nEnter the Quantity(whole number ex. 4): ");
     scanf("%s", inputQuantity);
@@ -624,6 +681,8 @@ void addBook()
     printf("\nThe new book had been added successfully. :)\n");
     printBook(infoSize);
     infoSize++;
+    printf("\nBooks information after Addition : \n\n");
+    printTable();
 }
 
 void modify()
@@ -656,9 +715,15 @@ void modify()
     if (!strcasecmp(answer, yes))
     {
         printf("\nEnter New Title: ");
-        fflush(stdin);
-        gets(inputTitle);
+
+        do
+        {
+            fflush(stdin);
+            gets(inputTitle);
+        }
+        while(isStringEmpty(inputTitle) == 0);
         strcpy(info[index].title, inputTitle);
+
     }
     else if (!strcasecmp(answer, no))
     {
@@ -674,8 +739,12 @@ void modify()
     if (!strcasecmp(answer, yes))
     {
         printf("\nEnter New Author's name: ");
-        fflush(stdin);
-        gets(inputAuthor);
+        do
+        {
+            fflush(stdin);
+            gets(inputAuthor);
+        }
+        while(isStringEmpty(inputAuthor) == 0);
         strcpy(info[index].author, inputAuthor);
     }
     else if (!strcasecmp(answer, no))
@@ -779,7 +848,7 @@ void deleteBook ()
     info[index] = info[infoSize - 1];
     info[infoSize - 1] = temp;
     --infoSize;
-    printf("\nBooks information after deletion:\n\n");
+    printf("\nBooks information after Deletion : \n\n");
     printTable();
 }
 
@@ -829,6 +898,7 @@ void quit()
         if(option == 'y')
             save();
 
+        printf("\nGoodbye, have a nice day! :D\n");
         exit(0);
 
     }
@@ -848,6 +918,7 @@ void chooseOption()
            "### To\tSEARCH          enter 's'\n"
            "### To\tADVANCED SEARCH enter 'v'\n"
            "### To\tPRINT           enter 'p'\n"
+           "### To\tSAVE            enter 'z'\n"
            "### To\tQUIT            enter 'q'\n");
 
     fflush(stdin);
@@ -872,24 +943,29 @@ void chooseOption()
     else if (option == 'p')
         printAll();
 
+    else if (option == 'z')
+        save();
+
     else if (option == 'q')
         quit();
 
     else
     {
         printf("\nIncorrect Input!\n");
-        printf("Try again in:\n");
+        printf("Try again in : ");
         for (i = resetTimer; i != 0; i--)
-            {
-                printf("%d\n", i);
-                sleep(1);
-            }
+        {
+            printf("%d", i);
+            sleep(1);
+            printf("\b");
+        }
         chooseOption();
     }
 }
 
 void menu(FILE * fileCredentials, FILE * fileBooks)
 {
+    int flag;
     char option;
     readCredentials(fileCredentials, numOfLines(fileCredentials) / 2); // calls function to store username and password data into the global credentials array - gives function half number of lines since each element of the credentials array stores 2 lines
     printf("=======================================\n\n");
@@ -904,15 +980,19 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         option = tolower(option);
         if(option == 'l')
         {
-            login(numofTrials, numOfLines(fileCredentials) / 2);
+            do
+            {
+                flag = login(numofTrials, numOfLines(fileCredentials) / 2);
+            }
+            while (flag == 0);
             break;
         }
 
         else if(option == 'q')
-            {
-                printf("\nGoodbye, have a nice day! :D\n");
-                exit(0);
-            }
+        {
+            printf("\nGoodbye, have a nice day! :D\n");
+            exit(0);
+        }
         else
             continue;
     }
