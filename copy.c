@@ -60,6 +60,8 @@ float isValidPrice(string price);
 
 int isValidQuantity (string quantity);
 
+int isStringEmpty(string name);
+
 int searchByISBN(string isbn);
 
 void query ();
@@ -181,8 +183,12 @@ int login(int trials, int n) // login function that prompts user to enter a user
 
     for(i =0; i < n; i++) // for loop that passes through the Credentials array
         if (strcmp(Credentials[i].username, user) == 0 && strcmp(Credentials[i].password, pass) == 0) // BASE CASE - condition to check if the user inputted username and password match with any username and password from credentials array
+        {
+            printf("\n\nWelcome %s :D\n", Credentials[i].username);
+            printf("Your login is processing");
+            sleep(3);
             return 1; // leaves function by returning 1 and skips the remaining lines of the function without executing
-
+        }
     printf("Invalid username or password\nYou have %d more trials\n\n\n", trials-1); //prints error message informing the user of how many tries they have left before the program closes
     return login(--trials, n); // RECURSIVE CASE - in case of incorrect credentials, reduces number of tries remaining by 1 before function calls itself again
 
@@ -386,6 +392,21 @@ int isValidQuantity (string quantity)
     return validquantity;
 }
 
+int isStringEmpty(string name)
+{
+    while(1)
+    {
+        if(strlen(name) == 0)
+        {
+            printf("Enter valid name : ");
+            return 0;
+        }
+        else
+            return  1;
+    }
+
+}
+
 int searchByISBN(string isbn)
 {
     int i;
@@ -574,7 +595,7 @@ void printAll()
 
 void addBook()
 {
-    string isbn, inputQuantity, inputprice, inputmonth, inputyear;
+    string isbn, inputQuantity, inputprice, inputmonth, inputyear, title, author;
     int index = 0, isValid = 0;
     char option;
     printf("Enter ISBN of the book to be added (ISBN must be 13 digits - All numbers) : ");
@@ -612,11 +633,24 @@ void addBook()
     strcpy(info[infoSize].ISBN, isbn);
 
     printf("\nEnter the Title : ");
-    fflush(stdin);
-    gets(info[infoSize].title);
+    do
+    {
+        fflush(stdin);
+        gets(title);
+    }
+    while(isStringEmpty(title) == 0);
+    strcpy(info[infoSize].title, title);
+
 
     printf("\nEnter the Author Name : ");
-    gets(info[infoSize].author);
+    do
+    {
+        fflush(stdin);
+        gets(author);
+    }
+    while(isStringEmpty(author) == 0);
+    strcpy(info[infoSize].author, author);
+
 
     printf("\nEnter the Quantity(whole number ex. 4): ");
     scanf("%s", inputQuantity);
@@ -671,9 +705,15 @@ void modify()
     if (!strcasecmp(answer, yes))
     {
         printf("\nEnter New Title: ");
-        fflush(stdin);
-        gets(inputTitle);
+
+        do
+        {
+            fflush(stdin);
+            gets(inputTitle);
+        }
+        while(isStringEmpty(inputTitle) == 0);
         strcpy(info[index].title, inputTitle);
+
     }
     else if (!strcasecmp(answer, no))
     {
@@ -689,8 +729,12 @@ void modify()
     if (!strcasecmp(answer, yes))
     {
         printf("\nEnter New Author's name: ");
-        fflush(stdin);
-        gets(inputAuthor);
+        do
+        {
+            fflush(stdin);
+            gets(inputAuthor);
+        }
+        while(isStringEmpty(inputAuthor) == 0);
         strcpy(info[index].author, inputAuthor);
     }
     else if (!strcasecmp(answer, no))
@@ -863,6 +907,7 @@ void chooseOption()
            "### To\tSEARCH          enter 's'\n"
            "### To\tADVANCED SEARCH enter 'v'\n"
            "### To\tPRINT           enter 'p'\n"
+           "### To\tSAVE            enter 'z'\n"
            "### To\tQUIT            enter 'q'\n");
 
     fflush(stdin);
@@ -887,6 +932,9 @@ void chooseOption()
     else if (option == 'p')
         printAll();
 
+    else if (option == 'z')
+        save();
+
     else if (option == 'q')
         quit();
 
@@ -895,10 +943,10 @@ void chooseOption()
         printf("\nIncorrect Input!\n");
         printf("Try again in:\n");
         for (i = resetTimer; i != 0; i--)
-            {
-                printf("%d\n", i);
-                sleep(1);
-            }
+        {
+            printf("%d\n", i);
+            sleep(1);
+        }
         chooseOption();
     }
 }
@@ -929,10 +977,10 @@ void menu(FILE * fileCredentials, FILE * fileBooks)
         }
 
         else if(option == 'q')
-            {
-                printf("\nGoodbye, have a nice day! :D\n");
-                exit(0);
-            }
+        {
+            printf("\nGoodbye, have a nice day! :D\n");
+            exit(0);
+        }
         else
             continue;
     }
