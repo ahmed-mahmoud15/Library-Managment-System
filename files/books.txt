@@ -8,3 +8,12 @@
 9781506354331,Robison Crusoe,Daniel Defoe,17,8.44,6-2013
 9781506306789,Little Women,Louisa May Alcott,11,2.35,1-2021
 9781506323764,Crime and Punishment,Fyodor Dostoyevsky,16,5.28,3-2022
+9700000000001,data structures and algorithms,Timberlake Karen,10,7.5,12-2008
+9700000000002,analysis and design of algorithms,Thomas Korman,7,6.2,12-2015
+9700000000003,digital logic design,Michael Robert,3,5.5,11-2008
+9700000000004,operating systems,William Stallings,2,4.73,11-2015
+9700000000005,database systems,Ramez Elmasri,1,4.5,10-2015
+9700000000006,mathematics for social scientists,Kropko Jonathan,7,4.21,1-2020
+9700000000007,discrete structure for computing,Gordon J. Pace,8,3.8,2-2020
+9700000000008,artificial intelligence,Erik J. Larson,7,3.57,10-2015
+9700000000009,systems programming,John J. Donovan,9,2.5,5-2017
