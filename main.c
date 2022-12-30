@@ -169,7 +169,7 @@ int login(int trials, int n) // login function that prompts user to enter a user
         printf("Wait 10 seconds to try again\n");
         sleep(10);
 
-        printf("\nEnter \"l\" to reattempt login, anything else to quit.");
+        printf("\nEnter \"l\" to reattempt login, anything else to quit : ");
         do
         {
             fflush(stdin);
@@ -190,11 +190,11 @@ int login(int trials, int n) // login function that prompts user to enter a user
     string user, pass;
 
     fflush(stdin);
-    printf("\nEnter Username: ");
+    printf("\nEnter Username : ");
     gets(user);
 
     fflush(stdin);
-    printf("Enter Password: ");
+    printf("Enter Password : ");
     gets(pass);
 
     for(i =0; i < n; i++) // for loop that passes through the Credentials array
@@ -1061,6 +1061,8 @@ void save()
         else
             fprintf(fileBooks, ",%d-%d\n",info[i].publication.month, info[i].publication.year);
     }
+
+    printf("\nData was saved successfully :D \n");
     fclose(fileBooks);
 }
 
