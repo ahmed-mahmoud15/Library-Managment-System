@@ -294,7 +294,7 @@ int isValidISBN (shortString isbn) // returns 1 if valid 0 if invalid
 
 int isValidMonth (shortString OLDmonth)
 {
-    int i, valid, count, validmonth;
+    int i, valid, count, validmonth = 0;
     do
     {
         valid = 0;
@@ -313,24 +313,28 @@ int isValidMonth (shortString OLDmonth)
             }
             else
                 valid = 1;
+
             i++;
         }
         if (valid)
             validmonth = atoi(OLDmonth);
+        else
+            continue;
 
         if (validmonth > 12 || validmonth < 1)
         {
+            valid = 0;
             printf("Enter a valid month (whole number from 1 to 12): ");
             scanf("%s", OLDmonth);
         }
     }
-    while (!valid || !count || validmonth > 12 || validmonth < 1);
+    while (!valid || !count );
     return validmonth;
 }
 
 int isValidYear (shortString OLDyear)
 {
-    int i, valid, count, validyear;
+    int i, valid, count, validyear = 0;
     do
     {
         valid = 0;
@@ -349,18 +353,23 @@ int isValidYear (shortString OLDyear)
             }
             else
                 valid = 1;
+
             i++;
         }
+
         if (valid)
             validyear = atoi(OLDyear);
+        else
+            continue;
 
         if (validyear > 2022 || validyear < 0)
         {
+            valid = 0;
             printf("Enter a valid year (whole number 0 to 2022): ");
             scanf("%s", OLDyear);
         }
     }
-    while (!valid || !count || validyear > 2022 || validyear < 0);
+    while (!valid || !count);
     return validyear;
 }
 
@@ -419,6 +428,7 @@ int isValidQuantity (shortString quantity)
             }
             else
                 valid = 1;
+
             i++;
         }
         if (valid)
@@ -722,10 +732,10 @@ void addBook()
         {
             printf("\nThis Book already exists!\n");
             printf("Enter \"n\" to enter new ISBN\n"
-                   "Enter \"m\" to choose other option");
+                   "Enter \"m\" to choose other option\n");
             do
             {
-                printf("\nEnter \"n\" or \"m\" : \n");
+                printf("\nEnter \"n\" or \"m\" : ");
                 do
                 {
                     fflush(stdin);
@@ -735,12 +745,12 @@ void addBook()
                 option = tolower(option);
 
                 if(option == 'n')
-                    printf("Enter another ISBN : \n");
+                    printf("Enter another ISBN : ");
                 else if(option == 'm')
                     return;
                 else
                     printf("Invalid input!\nEnter 'n' to enter new ISBN\n"
-                           "Enter 'm' to choose other option\n");
+                           "Enter 'm' to choose other option : ");
             }
             while (option != 'n' && option != 'm');
         }
@@ -790,7 +800,7 @@ void addBook()
     printf("\nBooks information after Addition : \n\n");
     printTable();
 
-    printf("\nDo you want to add another book (y,n)? :");
+    printf("\nDo you want to add another book (y,n)? : ");
     do
     {
         do
